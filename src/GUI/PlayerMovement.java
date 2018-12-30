@@ -26,6 +26,7 @@ public class PlayerMovement extends Thread {
                 e.printStackTrace();
             }
         }
+        board.throwMessage();
     }
 
     private boolean MaxTimeReached() {

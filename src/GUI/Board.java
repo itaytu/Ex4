@@ -270,4 +270,12 @@ public class Board extends JPanel implements MouseListener {
     synchronized void updateGUI() {
         repaint();
     }
+
+    public void throwMessage() {
+        JOptionPane.showMessageDialog(this,"The game has ended.\n" +
+                play.getStatistics());
+    }
+
+
+
 }
