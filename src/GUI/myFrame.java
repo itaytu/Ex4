@@ -95,7 +95,6 @@ public class myFrame extends JFrame {
         runStepByStep.addActionListener(e -> runStepByStep());
     }
 
-
     public void loadGame(){
         System.out.println("> Load Game");
 

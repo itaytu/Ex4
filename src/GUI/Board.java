@@ -30,6 +30,10 @@ public class Board extends JPanel implements MouseListener {
     private boolean loaded = false;
     private boolean serverInitiated = false;
 
+    private boolean firstClick = true;
+
+    private int numOfclicks=0;
+
 
     public Board() {
         this.addMouseListener(this);
@@ -121,7 +125,6 @@ public class Board extends JPanel implements MouseListener {
             int x = e.getX();
             int y = e.getY();
 
-            System.out.println("X: " + x + ", Y: " + y);
             Point3D playerPoint = mapProperties.toCoords(x, y);
             Pacman newPlayer = new Pacman(playerPoint.get_x(), playerPoint.get_y());
             game.addPlayer(newPlayer);
@@ -141,8 +144,6 @@ public class Board extends JPanel implements MouseListener {
             stepPoint = mapProperties.toCoords(x, y);
 
             runStepByStep();
-
-
         }
 
         else if (run) {
@@ -154,6 +155,12 @@ public class Board extends JPanel implements MouseListener {
             movementX = stepPoint.get_x();
             movementY = stepPoint.get_y();
 
+            numOfclicks++;
+
+            if (firstClick) {
+                startThread();
+                firstClick = false;
+            }
         }
     }
 
@@ -187,15 +194,31 @@ public class Board extends JPanel implements MouseListener {
         repaint();
     }
 
-    public void setAddPlayer(boolean flag) {
-        addPlayer = flag;
+    public void runGame() {
+        if(!serverInitiated || !play.isRuning()) {
+            INITserver();
+        }
     }
 
-    public void setStepByStep(boolean flag) { stepByStep = flag; }
+    private void startThread() {
+        Thread movement = new PlayerMovement(this);
 
-    public void setRun(boolean flag) {
-        run = flag;
+        movement.start();
     }
+
+    public void runStepByStep() {
+        if(!serverInitiated) INITserver();
+
+        double [] azimut = coords.azimuth_elevation_dist(game.getPlayer().getPoint() , stepPoint);
+
+        play.rotate(azimut[0]);
+        game.update(play);
+
+        this.throwMessage();
+        repaint();
+    }
+
+
 
     public void clearPlayer() {
         game.getPlayer().setPoint(null);
@@ -210,33 +233,29 @@ public class Board extends JPanel implements MouseListener {
         game.getFruitArrayList().clear();
         game.getPacmanArrayList().clear();
 
+        numOfclicks=0;
+
         repaint();
     }
 
-    public void runGame() {
-        if(!serverInitiated) INITserver();
 
-
-        PlayerMovement movement = new PlayerMovement(this);
-        movement.start();
-
-
+    public void setAddPlayer(boolean flag) {
+        addPlayer = flag;
     }
 
-    public void runStepByStep() {
-        if(!serverInitiated) INITserver();
+    public void setStepByStep(boolean flag) { stepByStep = flag; }
 
-        System.out.println("Player Point: " + game.getPlayer().getPoint().get_x() + ", " + game.getPlayer().getPoint().get_y());
-        System.out.println("Clicked Point: " + stepPoint.get_x() + ", " + stepPoint.get_y());
-        double [] azimut = coords.azimuth_elevation_dist(game.getPlayer().getPoint() , stepPoint);
-        System.out.println("AZIMUT: " + azimut[0]);
-        play.rotate(azimut[0]);
-
-        game.update(play);
-
-        System.out.println(play.getStatistics());
-        repaint();
+    public void setRun(boolean flag) {
+        run = flag;
     }
+
+    private void INITserver(){
+        play.setIDs(308566611, 312522329);
+        play.setInitLocation(game.getPlayer().getPoint().get_y(), game.getPlayer().getPoint().get_x());
+        play.start();
+        serverInitiated = true;
+    }
+
 
     public double getMovementX() {
         return movementX;
@@ -250,13 +269,6 @@ public class Board extends JPanel implements MouseListener {
         return game.getPlayer();
     }
 
-    private void INITserver(){
-        play.setIDs(308566611, 312522329);
-        play.setInitLocation(game.getPlayer().getPoint().get_y(), game.getPlayer().getPoint().get_x());
-        play.start();
-        serverInitiated = true;
-    }
-
     public MyCoords getCoords() {
         return coords;
     }
@@ -267,6 +279,11 @@ public class Board extends JPanel implements MouseListener {
 
     public Play getPlay() { return play; }
 
+    public int getNumOfclicks() {
+        return numOfclicks;
+    }
+
+
     synchronized void updateGUI() {
         repaint();
     }
@@ -275,7 +292,5 @@ public class Board extends JPanel implements MouseListener {
         JOptionPane.showMessageDialog(this,"The game has ended.\n" +
                 play.getStatistics());
     }
-
-
 
 }
