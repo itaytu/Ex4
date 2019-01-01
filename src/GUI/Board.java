@@ -1,10 +1,8 @@
 package GUI;
 
 import Converters.Map;
-import Coords.MyCoords;
 import Elements.*;
 import Geom.Point3D;
-import Robot.Play;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,48 +15,24 @@ import java.io.File;
 
 public class Board extends JPanel implements MouseListener {
 
-    private double movementX, movementY;
-
-    private Play play;
     private BufferedImage map, pacman, player, fruit, ghost;
     private Game game;
     private Map mapProperties;
-    private MyCoords coords;
-    private Point3D stepPoint = new Point3D(0,0,0);
+    private NextPoint nextPoint;
 
-    private boolean addPlayer, stepByStep, run = false;
-    private boolean loaded = false;
-    private boolean serverInitiated = false;
-
-    private boolean firstClick = true;
-
-    private int numOfclicks=0;
-
+    private boolean addPlayer, stepByStep, runAutoGame, loaded, firstClick = true;
 
     public Board() {
-        this.addMouseListener(this);
+        init();
+    }
+
+    private void init() {
         game = new Game();
-        INIT();
-    }
+        nextPoint = new NextPoint();
 
-    public void INIT() {
         loadImages();
-        coords = new MyCoords();
+        addMouseListener(this);
     }
-
-    private void loadImages() {
-        try {
-            map = ImageIO.read(new File("Ariel1.png"));
-            pacman = ImageIO.read(new File("badPacman.png"));
-            fruit = ImageIO.read(new File("fruit.png"));
-            ghost = ImageIO.read(new File ("ghost.png"));
-            player = ImageIO.read(new File ("pacman.png"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        repaint();
-    }
-
 
     @Override
     public void paint(Graphics g) {
@@ -106,11 +80,10 @@ public class Board extends JPanel implements MouseListener {
                 int height = minArr[1] - startArr[1];
 
                 g.fillRect(startArr[0], startArr[1], width, height);
-
             }
         }
 
-        if (loaded == true) {
+        if (loaded) {
                 int[] arr = mapProperties.gps2Pixels(game.getPlayer().getPoint());
                 g.drawImage(player, arr[0], arr[1], this);
         }
@@ -119,47 +92,22 @@ public class Board extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        mapProperties = new Map(map, getWidth(), getHeight(), 35.20238, 35.21236, 32.10190, 32.10569);
-
-        if(addPlayer) {
+        if (addPlayer || stepByStep || runAutoGame) {
             int x = e.getX();
             int y = e.getY();
 
-            Point3D playerPoint = mapProperties.toCoords(x, y);
-            Pacman newPlayer = new Pacman(playerPoint.get_x(), playerPoint.get_y());
-            game.addPlayer(newPlayer);
+            mapProperties = new Map(map, getWidth(), getHeight(), 35.20238, 35.21236, 32.10190, 32.10569);
+            Point3D newPoint = mapProperties.toCoords(x, y);
 
-            addPlayer = false;
+            if (addPlayer) {
 
-            movementX = playerPoint.get_x();
-            movementY = playerPoint.get_y();
+                nextPoint.setPoints(newPoint, newPoint);
+            }
 
-            repaint();
-        }
-
-        else if(stepByStep) {
-            int x = e.getX();
-            int y = e.getY();
-
-            stepPoint = mapProperties.toCoords(x, y);
-
-            runStepByStep();
-        }
-
-        else if (run) {
-            int x = e.getX();
-            int y = e.getY();
-
-            stepPoint = mapProperties.toCoords(x, y);
-
-            movementX = stepPoint.get_x();
-            movementY = stepPoint.get_y();
-
-            numOfclicks++;
-
-            if (firstClick) {
-                startThread();
-                firstClick = false;
+            else {
+                // stepByStep || runAutoGame Option
+                // Update observers with new points
+                nextPoint.setPoints(newPoint, game.getPlayer().getPoint());
             }
         }
     }
@@ -168,57 +116,17 @@ public class Board extends JPanel implements MouseListener {
     public void mousePressed(MouseEvent e) {
 
     }
-
     @Override
     public void mouseReleased(MouseEvent e) {
 
     }
-
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
-
     @Override
     public void mouseExited(MouseEvent e) {
 
     }
-
-
-
-    public void loadGame(String path) {
-        clearGame();
-        play = new Play(path);
-        this.game = new Game(play);
-        loaded = true;
-        repaint();
-    }
-
-    public void runGame() {
-        if(!serverInitiated || !play.isRuning()) {
-            INITserver();
-        }
-    }
-
-    private void startThread() {
-        Thread movement = new PlayerMovement(this);
-
-        movement.start();
-    }
-
-    public void runStepByStep() {
-        if(!serverInitiated) INITserver();
-
-        double [] azimut = coords.azimuth_elevation_dist(game.getPlayer().getPoint() , stepPoint);
-
-        play.rotate(azimut[0]);
-        game.update(play);
-
-        this.throwMessage();
-        repaint();
-    }
-
-
 
     public void clearPlayer() {
         game.getPlayer().setPoint(null);
@@ -226,18 +134,14 @@ public class Board extends JPanel implements MouseListener {
     }
 
     public void clearGame() {
-
         game.setPlayer(new Point3D(0,0,0));
         game.getBlockArrayList().clear();
         game.getGhostArrayList().clear();
         game.getFruitArrayList().clear();
         game.getPacmanArrayList().clear();
 
-        numOfclicks=0;
-
         repaint();
     }
-
 
     public void setAddPlayer(boolean flag) {
         addPlayer = flag;
@@ -245,52 +149,61 @@ public class Board extends JPanel implements MouseListener {
 
     public void setStepByStep(boolean flag) { stepByStep = flag; }
 
-    public void setRun(boolean flag) {
-        run = flag;
+    public void setGame(Game game) {
+        this.game = game;
     }
 
-    private void INITserver(){
-        play.setIDs(308566611, 312522329);
-        play.setInitLocation(game.getPlayer().getPoint().get_y(), game.getPlayer().getPoint().get_x());
-        play.start();
-        serverInitiated = true;
+    public void setLoaded(boolean isLoaded) {
+        loaded = isLoaded;
     }
 
-
-    public double getMovementX() {
-        return movementX;
+    public void setRunAutoGame(boolean flag) {
+        runAutoGame = flag;
     }
 
-    public double getMovementY() {
-        return movementY;
+    public NextPoint getNextPoint() {
+        return nextPoint;
     }
 
-    public Pacman getPlayer() {
-        return game.getPlayer();
+    public boolean isFirstClick() {
+        return firstClick;
     }
 
-    public MyCoords getCoords() {
-        return coords;
+    public void setFirstClick(boolean isClicked) {
+        firstClick = isClicked;
     }
 
-    public Game getGame() {
-        return game;
-    }
-
-    public Play getPlay() { return play; }
-
-    public int getNumOfclicks() {
-        return numOfclicks;
-    }
-
-
-    synchronized void updateGUI() {
+    private void loadImages() {
+        try {
+            map = ImageIO.read(new File("Ariel1.png"));
+            pacman = ImageIO.read(new File("badPacman.png"));
+            fruit = ImageIO.read(new File("fruit.png"));
+            ghost = ImageIO.read(new File ("ghost.png"));
+            player = ImageIO.read(new File ("pacman.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         repaint();
     }
 
-    public void throwMessage() {
-        JOptionPane.showMessageDialog(this,"The game has ended.\n" +
-                play.getStatistics());
+    public void updateGUI() {
+        repaint();
     }
 
+    public boolean isRunStepByStep() {
+        return stepByStep;
+    }
+
+    public boolean isRunAutoGame() {
+        return runAutoGame;
+    }
+
+    public boolean isAddPlayer() {
+        return addPlayer;
+    }
+
+    public void showMessagePrompt(String msg) {
+        JOptionPane.showMessageDialog(null, "Game ended.\n" + msg);
+
+    }
 }

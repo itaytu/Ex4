@@ -1,10 +1,12 @@
 package Tests;
 
-import GUI.myFrame;
+import controller.Controller;
 
 public class TestMain {
 	
 	public static void main(String[] args) {
-		new myFrame();
+		//new MainFrame();
+		
+		new Controller();
 	}
 }

@@ -7,27 +7,15 @@ import java.util.ArrayList;
 
 public class Game {
 
-    private Play play;
-
     private ArrayList<Ghost> ghostArrayList;
     private ArrayList<Fruit> fruitArrayList;
     private ArrayList<Pacman> pacmanArrayList;
     private ArrayList<Block> blockArrayList;
     private Pacman player;
 
-    private ArrayList<String> myData;
-
-
     public Game(Play play) {
         this.player = new Pacman(-1,-1);
-        INIT(play);
-    }
-
-    public Game() {
-        pacmanArrayList = new ArrayList<>();
-        fruitArrayList = new ArrayList<>();
-        ghostArrayList = new ArrayList<>();
-        blockArrayList = new ArrayList<>();
+        init(play);
     }
 
     public Game(Game g) {
@@ -38,47 +26,52 @@ public class Game {
         player = new Pacman(g.getPlayer());
     }
 
-    public void INIT(Play play) {
-        this.play = play;
+    public Game() {
+        pacmanArrayList = new ArrayList<>();
+        fruitArrayList = new ArrayList<>();
+        ghostArrayList = new ArrayList<>();
+        blockArrayList = new ArrayList<>();
+    }
 
+    private void init(Play play) {
         ghostArrayList = new ArrayList<>();
         pacmanArrayList = new ArrayList<>();
         fruitArrayList = new ArrayList<>();
         blockArrayList = new ArrayList<>();
 
-        myData = play.getBoard();
+        ArrayList<String> myData = play.getBoard();
 
-        for (int i = 0; i < myData.size(); i++) {
-            String tmp = myData.get(i);
-            String [] tmp2 = myData.get(i).split(",");
+        for (String aMyData : myData) {
+            String[] tmp2 = aMyData.split(",");
 
-            if (tmp2[0].equals("P") || tmp2[0].equals("p")) {
-                Pacman newPacman = new Pacman(tmp2, 3, 2, 4);
-                pacmanArrayList.add(newPacman);
-            }
-
-            else if (tmp2[0].equals("F") || tmp2[0].equals("f")) {
-                Fruit newFruit = new Fruit(tmp2, 3, 2, 4);
-                fruitArrayList.add(newFruit);
-            }
-
-            else if (tmp2[0].equals("G") || tmp2[0].equals("g")) {
-                Ghost newGhost = new Ghost(tmp2, 3 , 2 , 4);
-                ghostArrayList.add(newGhost);
-            }
-
-            else if (tmp2[0].equals("B") || tmp2[0].equals("b")) {
-                Block newBlock = new Block(tmp2, 3, 2, 4, 6 ,5 , 7);
-                blockArrayList.add(newBlock);
-            }
-
-            else if (tmp2[0].equals("M") || tmp2[0].equals("m")) {
-                player = new Pacman(tmp2, 3, 2, 1);
+            switch (tmp2[0]) {
+                case "P":
+                case "p":
+                    Pacman newPacman = new Pacman(tmp2, 3, 2, 4);
+                    pacmanArrayList.add(newPacman);
+                    break;
+                case "F":
+                case "f":
+                    Fruit newFruit = new Fruit(tmp2, 3, 2, 4);
+                    fruitArrayList.add(newFruit);
+                    break;
+                case "G":
+                case "g":
+                    Ghost newGhost = new Ghost(tmp2, 3, 2, 4);
+                    ghostArrayList.add(newGhost);
+                    break;
+                case "B":
+                case "b":
+                    Block newBlock = new Block(tmp2, 3, 2, 4, 6, 5, 7);
+                    blockArrayList.add(newBlock);
+                    break;
+                case "M":
+                case "m":
+                    player = new Pacman(tmp2, 3, 2, 1);
+                    break;
             }
         }
     }
-
-
 
     public ArrayList<Pacman> getPacmanArrayList() {
         return pacmanArrayList;
@@ -108,14 +101,12 @@ public class Game {
         this.player = new Pacman(p.get_x(), p.get_y());
     }
 
-
     public void update(Play play) {
         pacmanArrayList.clear();
         fruitArrayList.clear();
         ghostArrayList.clear();
         blockArrayList.clear();
 
-        INIT(play);
+        init(play);
     }
-
 }
