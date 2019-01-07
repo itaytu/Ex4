@@ -2,52 +2,87 @@ package Elements;
 
 import Geom.Point3D;
 
+import java.util.ArrayList;
+
 public class Block {
 
-	private int _ID;
-	private char _type;
-	private Point3D _pointMin, _pointMax;
-	private double _weight;
-	private double _x1, _y1, _z1;
-	private double _x2, _y2, _z2;
-	
-	private static int _IDGUI = 0;
+	private int ID;
+	private char type;
+	private Point3D MinLeft, MaxLeft, MinRight, MaxRight;
+	private double weight;
+	private double x1, y1, z1;
+	private double x2, y2, z2;
 
+	private ArrayList<Point3D> points;
 
-	public Block(String[] data, int x1, int y1, int z1, int x2, int y2, int z2) {
-		_type = 'B';
-		_ID = Integer.parseInt(data[1]);
+	public Block(String[] data) {
+		type = 'B';
+		ID = Integer.parseInt(data[1]);
 
-		_x1 = Double.parseDouble(data[x1]);
-		_y1 = Double.parseDouble(data[y1]);
-		_z1 = Double.parseDouble(data[z1]);
+		this.x1 = Double.parseDouble(data[3]);
+		this.y1 = Double.parseDouble(data[2]);
+		this.z1 = Double.parseDouble(data[4]);
 
-		_x2 = Double.parseDouble(data[x2]);
-		_y2= Double.parseDouble(data[y2]);
-		_z2 = Double.parseDouble(data[z2]);
+		this.x2 = Double.parseDouble(data[6]);
+		this.y2 = Double.parseDouble(data[5]);
+		this.z2 = Double.parseDouble(data[7]);
 
-		_pointMin = new Point3D(Math.min(_x1, _x2), Math.min(_y1, _y2), Math.min(_z1, _z2));
-		_pointMax = new Point3D(Math.max(_x1, _x2), Math.max(_y1, _y2), Math.max(_z1, _z2));
+		weight = Double.parseDouble(data[8]);
 
-		_weight = Double.parseDouble(data[8]);
+		MinLeft = new Point3D(Math.min(this.x1, this.x2), Math.min(this.y1, this.y2), 0);
+		MaxLeft = new Point3D(Math.min(this.x1, this.x2), Math.max(this.y1, this.y2), 0);
+
+		MinRight = new Point3D(Math.max(this.x1,this.x2), Math.min(this.y1, this.y2),0);
+		MaxRight = new Point3D(Math.max(this.x1, this.x2), Math.max(this.y1, this.y2), 0);
+
+		points = new ArrayList<>();
+
+		points.add(MaxLeft);
+		points.add(MaxRight);
+		points.add(MinRight);
+		points.add(MinLeft);
+
 	}
 
 
-	public Point3D get_pointMax() {
-		return _pointMax;
+	public Point3D getMaxRight() {
+		return MaxRight;
 	}
 
-	public Point3D get_pointMin() {
-		return _pointMin;
+	public void setMaxRight(Point3D maxRight) {
+		this.MaxRight = maxRight;
 	}
 
-	public void set_pointMax(Point3D _pointMax) {
-		this._pointMax = _pointMax;
+
+	public Point3D getMinLeft() {
+		return MinLeft;
 	}
 
-	public void set_pointMin(Point3D _pointMin) {
-		this._pointMin = _pointMin;
+	public void setMinLeft(Point3D minLeft) {
+		this.MinLeft = minLeft;
 	}
 
+
+	public Point3D getMinRight() {
+		return MinRight;
+	}
+
+	public void setMinRight(Point3D minRight) {
+		MinRight = minRight;
+	}
+
+
+	public Point3D getMaxLeft() {
+		return MaxLeft;
+	}
+
+	public void setMaxLeft(Point3D maxLeft) {
+		MaxLeft = maxLeft;
+	}
+
+
+	public ArrayList<Point3D> getPoints() {
+		return points;
+	}
 
 }

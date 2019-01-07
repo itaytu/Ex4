@@ -91,4 +91,5 @@ public class pixelsCoordsConverter {
 		int[] arr = { (int) x, (int) y };
 		return arr;
 	}
+
 }
