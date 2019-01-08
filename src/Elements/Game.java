@@ -62,7 +62,7 @@ public class Game {
                     break;
                 case "B":
                 case "b":
-                    Block newBlock = new Block(tmp2, 3, 2, 4, 6, 5, 7);
+                    Block newBlock = new Block(tmp2);
                     blockArrayList.add(newBlock);
                     break;
                 case "M":
