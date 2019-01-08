@@ -1,24 +1,29 @@
 package controller;
 
-import Elements.Game;
-import Elements.NextPoint;
-import Elements.Pacman;
+import Algorithms.Calculations;
+import Coords.MyCoords;
+import Elements.*;
 import GUI.Board;
 import GUI.MainFrame;
 import Geom.Point3D;
 import Robot.Play;
+import Utils.GraphObject;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
 public class Controller implements Observer {
 
+    private MyCoords coords = new MyCoords();
+
     private Board board;
     private Game game;
     private Play play;
+    private Calculations calculations;
     private MainFrame frame;
     private boolean firstTimeRun = true, serverInitiated = false;
 
@@ -53,11 +58,16 @@ public class Controller implements Observer {
             runStepByStep();
         });
 
+        frame.getRunAlgo().addActionListener(e -> {
+            runAlgo();
+        });
+
         frame.getAddPlayer().addActionListener(e -> {
             addPlayer();
             frame.getAddPlayer().setEnabled(false);
             frame.getRunStepByStep().setEnabled(true);
             frame.getRunGame().setEnabled(true);
+            frame.getRunAlgo().setEnabled(true);
         });
 
         frame.getRemovePlayer().addActionListener(e -> {
@@ -69,8 +79,9 @@ public class Controller implements Observer {
         observe(board.getNextPoint());
     }
 
-    private void initServer() {
-        play.setIDs(308566611, 312522329);
+    private void initServer(boolean isAlgo) {
+        if (isAlgo) play.setIDs(308566611, 312522329, 123);
+        else play.setIDs(308566611, 312522329);
         game.getPlayer().setPoint(nextStepPoint);
         play.setInitLocation(game.getPlayer().getPoint().get_y(), game.getPlayer().getPoint().get_x());
         play.start();
@@ -80,6 +91,7 @@ public class Controller implements Observer {
 
     private void loadGame(){
         String path = chooseFilePath();
+        System.out.println(path);
 
         if (path != null) {
             play = new Play(path);
@@ -115,7 +127,7 @@ public class Controller implements Observer {
     }
 
     private void runNextStep() {
-        if(!serverInitiated) initServer();
+        if(!serverInitiated) initServer(false);
 
         play.rotate(azimuth);
         game.update(play);
@@ -123,8 +135,18 @@ public class Controller implements Observer {
         board.updateGUI();
     }
 
+    private void runAlgo() {
+        if(!serverInitiated) initServer(true);
+        board.setRunAlgo(true);
+
+        //  System.out.println("in CLICK RUNALGO");
+        startThread();
+
+        // board.setRunAlgo(true);
+    }
+
     private void startThread() {
-        if(!serverInitiated) initServer();
+        //if(!serverInitiated) initServer();
 
         Thread movement = new PlayerMovement();
         movement.start();
@@ -138,7 +160,7 @@ public class Controller implements Observer {
         azimuth = nextPoint.getAzimuth();
 
         if (firstTimeRun) {
-            initServer();
+            initServer(false);
             firstTimeRun = false;
         }
 
@@ -157,10 +179,10 @@ public class Controller implements Observer {
 
         // Auto game mode
         else if (board.isRunAutoGame()) {
-            if (board.isFirstClick()) {
+            //if (board.isFirstClick()) {
                 board.setFirstClick(false);
                 startThread();
-            }
+           // }
         }
     }
 
@@ -189,30 +211,85 @@ public class Controller implements Observer {
 
         @Override
         public void run() {
-
             frame.getRunGame().setEnabled(false);
             frame.getRunStepByStep().setEnabled(false);
+            frame.getRunAlgo().setEnabled(false);
 
-            while(play.isRuning()) {
+            if (board.isRunAutoGame()) {
+                System.out.println("IN RUN GAME: ");
+                while (play.isRuning()) {
+                    System.out.println("IN SERVER INIT: ");
+                    play.rotate(azimuth);
+                    game.update(play);
+                    board.updateGUI();
 
-                play.rotate(azimuth);
-                game.update(play);
-                board.updateGUI();
+                    frame.updateTextLabel(play.getStatistics());
 
-                frame.updateTextLabel(play.getStatistics());
+                    try {
+                        sleep(60);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                frame.updateTextLabel(play.getStatistics() + " | Game has ended");
+                frame.getRunGame().setEnabled(true);
+                frame.getRunStepByStep().setEnabled(true);
+                frame.getRunAlgo().setEnabled(true);
 
-                try {
-                    sleep(60);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                board.clearGame();
+                board.clearPlayer();
+            }
+
+            else if (board.isRunAlgo()) {
+
+                while ((play.isRuning()) && (!game.getFruitArrayList().isEmpty())) {
+                    calculations = new Calculations(game, board.getWidth(), board.getHeight());
+                    calculations.INIT();
+                    ArrayList<GraphObject> path = calculations.getFinalPath();
+                    for (int i = 0; i < path.size(); i++) {
+                        System.out.println(path.get(i).getID());
+                    }
+                    System.out.println("------------------------------------");
+                    for (int i = 1; i < path.size(); i++) {
+                        Point3D target = path.get(i).getPointGPS();
+                        if(!isIN(calculations.getTargetFruit().getPointGPS())) break;
+                        while(play.isRuning() && isIN(calculations.getTargetFruit().getPointGPS())) {
+                            if(closeDistance(game.getPlayer().getPoint(), target)) break;
+                            double[] azimut = coords.azimuth_elevation_dist(game.getPlayer().getPoint(), target);
+                            play.rotate(azimut[0]);
+                            game.update(play);
+                            board.updateGUI();
+                            frame.updateTextLabel(play.getStatistics());
+                            try {
+                                sleep(60);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+                frame.updateTextLabel(play.getStatistics() + " | Game has ended");
+            }
+        }
+
+        private boolean isIN(Point3D fruitPoint) {
+            for(Fruit f : game.getFruitArrayList()) {
+                if((fruitPoint.get_x() == f.getPoint().get_x()) && (fruitPoint.get_y() == f.getPoint().get_y())) {
+                    return true;
                 }
             }
-            frame.updateTextLabel(play.getStatistics() + " | Game has ended");
-            frame.getRunGame().setEnabled(true);
-            frame.getRunStepByStep().setEnabled(true);
-
-            board.clearGame();
-            board.clearPlayer();
+            return false;
         }
+
+        private boolean closeDistance(Point3D source, Point3D target) {
+            double range= 1;
+            if(coords.distance3d(source, target) <= range) return true;
+            return false;
+        }
+
     }
+
+
+
+
 }

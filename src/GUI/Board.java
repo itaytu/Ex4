@@ -20,7 +20,8 @@ public class Board extends JPanel implements MouseListener {
     private Map mapProperties;
     private NextPoint nextPoint;
 
-    private boolean addPlayer, stepByStep, runAutoGame, loaded, firstClick = true;
+    private boolean addPlayer, stepByStep, runAutoGame, loaded, firstClick, runAlgo = false;
+    //private boolean runAlgo = false;
 
     public Board() {
         init();
@@ -71,10 +72,9 @@ public class Board extends JPanel implements MouseListener {
             for(int i = 0; i < game.getBlockArrayList().size(); i ++) {
                 Block b = game.getBlockArrayList().get(i);
 
-                Point3D startP = new Point3D(b.get_pointMin().get_x(), b.get_pointMax().get_y(), 0);
-                int[] startArr = mapProperties.gps2Pixels(startP);
-                int[] minArr = mapProperties.gps2Pixels(b.get_pointMin());
-                int[] maxArr = mapProperties.gps2Pixels(b.get_pointMax());
+                int[] startArr = mapProperties.gps2Pixels(b.getMaxLeft());
+                int[] minArr = mapProperties.gps2Pixels(b.getMinLeft());
+                int[] maxArr = mapProperties.gps2Pixels(b.getMaxRight());
 
                 int width = maxArr[0] - startArr[0];
                 int height = minArr[1] - startArr[1];
@@ -92,6 +92,11 @@ public class Board extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
+    //    int hereX = e.getX();
+     //   int hereY = e.getY();
+
+      //  System.out.println("BOARD CLICK: " + hereX + ", " + hereY);
+      //  System.out.println("WIDTH: " + this.getWidth() + ", HEIGHT: " + this.getHeight());
         if (addPlayer || stepByStep || runAutoGame) {
             int x = e.getX();
             int y = e.getY();
@@ -110,6 +115,7 @@ public class Board extends JPanel implements MouseListener {
                 nextPoint.setPoints(newPoint, game.getPlayer().getPoint());
             }
         }
+
     }
 
     @Override
@@ -142,6 +148,8 @@ public class Board extends JPanel implements MouseListener {
 
         repaint();
     }
+
+    public void setRunAlgo(boolean flag) { runAlgo = flag; }
 
     public void setAddPlayer(boolean flag) {
         addPlayer = flag;
@@ -201,6 +209,8 @@ public class Board extends JPanel implements MouseListener {
     public boolean isAddPlayer() {
         return addPlayer;
     }
+
+    public boolean isRunAlgo() { return runAlgo; }
 
     public void showMessagePrompt(String msg) {
         JOptionPane.showMessageDialog(null, "Game ended.\n" + msg);

@@ -2,6 +2,7 @@
   <library name="Ex4">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/mysql-connector-java-5.1.47.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Graph_v0.11.jar!/" />
       <root url="jar://$PROJECT_DIR$/Ex4_v0.2.jar!/" />
     </CLASSES>
     <JAVADOC />
