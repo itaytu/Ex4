@@ -1,19 +1,19 @@
 package Algorithms;
 
+
 import Coords.MyCoords;
 import Elements.Block;
 import Elements.Fruit;
 import Elements.Game;
-
-import Converters.pixelsCoordsConverter;
 import Geom.Point3D;
 import Graph.Graph;
-import Utils.GraphObject;
-import Utils.LineOfSight;
-import Graph.Graph_Algo;
 import Graph.Node;
+import Graph.Graph_Algo;
 
-import java.awt.geom.Line2D;
+import Utils.GraphObject;
+import Converters.pixelsCoordsConverter;
+import Utils.LineOfSight;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -21,210 +21,177 @@ import java.util.Queue;
 public class Calculations {
 
     private pixelsCoordsConverter converter;
-    private MyCoords coords = new MyCoords();
-
-   // private ArrayList<int[]> pixelArray;
-   // private ArrayList<Point3D> pointsGPS;
-
-    private ArrayList<GraphObject> graphObjects;
-
-    private ArrayList<String> shortestPath;
-    private ArrayList<Double> pathsDistance;
-    private ArrayList<GraphObject> fruitObjects;
-    private ArrayList<GraphObject> finalPath;
-
-    private ArrayList<ArrayList<String>> paths;
+   // private MyCoords coords = new MyCoords();
 
     private Game game;
+
+    private GraphObject playerObject;
+    private GraphObject fruitObject;
+    private GraphObject targetFruit;
+
+    private ArrayList<GraphObject> blocksArrayList;
+    private ArrayList<GraphObject> fruitArrayList;
+    private ArrayList<GraphObject> path;
+
+    private ArrayList<GraphObject> finalPath;
+
+    private ArrayList<ArrayList<GraphObject>> allPaths;
+  // private ArrayList<Graph> graphs;
+
+    private ArrayList<Double> pathsDistance;
+
+    private ArrayList<String> shortestPath;
+    private ArrayList<ArrayList<String>> allShortestPaths;
 
     private LineOfSight lineOfSight;
     private Graph graph;
 
     private static boolean fruitINIT;
+    private static int target;
 
+    /**
+     * This class represents the Algorithm to run the game Automatically.
+     * The calculations needed for the Algorithm included:
+     * Setting up points for each block edge, fruit, and player.
+     * Checking paths from player to each fruit with consideration of the blocks.
+     * Creating a graph in order to calculate the shortest path from player to fruit
+     * using the dijkstra Algorithm.
+     *
+     * @param game
+     * @param width
+     * @param height
+     */
     public Calculations(Game game, int width, int height) {
-
-        this.game = game;
-        this.lineOfSight = new LineOfSight(game.getBlockArrayList(), width, height);
-        this.graph = new Graph();
-
-      //  pointsGPS = new ArrayList<>();
-       // pixelArray = new ArrayList<>();
-        graphObjects = new ArrayList<>();
-        shortestPath = new ArrayList<>();
-        pathsDistance = new ArrayList<>();
-        finalPath = new ArrayList<>();
-        paths = new ArrayList<>();
-        fruitObjects = new ArrayList<>();
-
-        converter = new pixelsCoordsConverter( width, height, 35.20238, 35.21236, 32.10190, 32.10569);
-        fruitINIT = false;
-    }
-
-    public void INIT(){
 
         GraphObject.resetID();
 
-        convertBlockAndPlayerToPixels();
+        this.game = game;
+        this.lineOfSight = new LineOfSight(game.getBlockArrayList(), width, height);
 
-        for(Fruit f : game.getFruitArrayList()) {
+        blocksArrayList = new ArrayList<>();
+        converter = new pixelsCoordsConverter( width, height, 35.20238, 35.21236, 32.10190, 32.10569);
 
-            //This function converts all the GPS points to pixels.
-            convertFruitToPixels(f);
+        createBlockObjects();
 
-            //This function creates GraphObjects for all the points.
-         //   createGraphObject();
-
-            //This function checks for all the graphObjects their neighbors and adds them.
-            addNeighbors();
-
-            System.out.println(graphObjects.get(graphObjects.size()-1).getID());
-            //This function creates the graph for the graphObjects
-            createGraph();
-
-            //Use the Algorithm to create path
-            createPath();
-
-            //Add the path to an ArrayList of paths.
-            addPath();
-
-            //This function resets all the Arrays.
-            reset();
-        }
-
-        //This function sets the minimum path
-        minPath();
-      //  for(int i = 0; i < shortestPath.size(); i++)
-       // System.out.println(shortestPath.get(i));
-
+        fruitINIT = false;
+        target = 0;
     }
 
 
     /**
-     * This function converts the points of the player, block edges and closest fruit from GPS
-     * coordinates to pixels.
+     * This function initiates all the calculations needed to get the shortest path from player to fruit.
      */
+    public void INIT(){
+        createPlayerObject();
 
-    private void convertBlockAndPlayerToPixels() {
+        fruitArrayList = new ArrayList<>();
+        for(Fruit f : game.getFruitArrayList()) {
+            createFruitObject(f);
+        }
 
+        allPaths = new ArrayList<>();
+        for (GraphObject graphObject : fruitArrayList) {
+            createPath(graphObject);
+        }
+
+        pathsDistance = new ArrayList<>();
+        allShortestPaths = new ArrayList<>();
+        for (ArrayList<GraphObject> graphObjects : allPaths) {
+            addNeighbors(graphObjects);
+            Graph g = createGraph(graphObjects);
+            createPath(g);
+            clearNeighbors(graphObjects);
+        }
+
+        getMinPath();
+    }
+
+
+    /**
+     * This function creates GraphObjects from Blocks.
+     */
+    private void createBlockObjects() {
+        for (Block b : game.getBlockArrayList()) {
+            int [] LeftTop = converter.gps2Pixels(b.getMaxLeft());
+            LeftTop[0] = LeftTop[0]-10;
+            LeftTop[1] = LeftTop[1]-10;
+            Point3D leftTopPixels = new Point3D(LeftTop[0], LeftTop[1]);
+            Point3D leftTopGPS = converter.toCoords(LeftTop[0], LeftTop[1]);
+            GraphObject leftTopObject = new GraphObject(leftTopPixels, leftTopGPS);
+            blocksArrayList.add(leftTopObject);
+
+            int [] RightTop = converter.gps2Pixels(b.getMaxRight());
+            RightTop[0] = RightTop[0]+10;
+            RightTop[1] = RightTop[1]-10;
+            Point3D rightTopPixels = new Point3D(RightTop[0], RightTop[1]);
+            Point3D rightTopGPS = converter.toCoords(RightTop[0], RightTop[1]);
+            GraphObject rightTopObject = new GraphObject(rightTopPixels, rightTopGPS);
+            blocksArrayList.add(rightTopObject);
+
+            int [] RightBottom = converter.gps2Pixels(b.getMinRight());
+            RightBottom[0] = RightBottom[0]+10;
+            RightBottom[1] = RightBottom[1]+10;
+            Point3D rightBotPixels = new Point3D(RightBottom[0], RightBottom[1]);
+            Point3D rightBotGPS = converter.toCoords(RightBottom[0], RightBottom[1]);
+            GraphObject rightBotObject = new GraphObject(rightBotPixels, rightBotGPS);
+            blocksArrayList.add(rightBotObject);
+
+            int [] LeftBottom = converter.gps2Pixels(b.getMinLeft());
+            LeftBottom[0] = LeftBottom[0]-10;
+            LeftBottom[1] = LeftBottom[1]+10;
+            Point3D leftBotPixels = new Point3D(LeftBottom[0], LeftBottom[1]);
+            Point3D leftBotGPS = converter.toCoords(LeftBottom[0], LeftBottom[1]);
+            GraphObject leftBotObject = new GraphObject(leftBotPixels, leftBotGPS);
+            blocksArrayList.add(leftBotObject);
+        }
+    }
+
+    /**
+     * This function creates a GraphObject for the player.
+     */
+    private void createPlayerObject() {
         int [] playerPoint = converter.gps2Pixels(game.getPlayer().getPoint());
         Point3D pixelPoint = new Point3D(playerPoint[0], playerPoint[1]);
-        GraphObject playerObject = new GraphObject(pixelPoint, game.getPlayer().getPoint());
-        graphObjects.add(playerObject);
-
-      // pixelArray.add(playerPoint);
-      // pointsGPS.add(game.getPlayer().getPoint());
-
-        if(!game.getBlockArrayList().isEmpty()) {
-            for (Block b : game.getBlockArrayList()) {
-                correctEdgePixels(b);
-            }
-        }
-
-        //System.out.println("CLOSEST FRUIT: " + closestFruit.getPoint().get_x() + ", " + closestFruit.getPoint().get_y())
+        playerObject = new GraphObject(pixelPoint, game.getPlayer().getPoint());
+        playerObject.setID(0);
+        GraphObject.decreaseID();
     }
 
-    private void convertFruitToPixels(Fruit f) {
+    /**
+     * This function creates a GraphObject for a given fruit.
+     * @param f
+     */
+    private  void createFruitObject(Fruit f) {
         int [] fruitPoint = converter.gps2Pixels(f.getPoint());
         Point3D fruitPixels = new Point3D(fruitPoint[0], fruitPoint[1]);
-     //   GraphObject fruitObject = new GraphObject(fruitPixels, f.getPoint());
-        if(!fruitINIT) {
-            GraphObject fruitObject = new GraphObject(fruitPixels, f.getPoint());
-            graphObjects.add(fruitObject);
-            fruitObjects.add(fruitObject);
-            fruitINIT = true;
-        }
-        else {
-            graphObjects.remove(graphObjects.size()-1);
-            GraphObject.decreaseID();
-            GraphObject fruitObject = new GraphObject(fruitPixels, f.getPoint());
-            graphObjects.add(fruitObject);
-            fruitObjects.add(fruitObject);
-        }
-
+        if(fruitINIT) GraphObject.decreaseID();
+        fruitObject = new GraphObject(fruitPixels, f.getPoint());
+        fruitArrayList.add(fruitObject);
+        fruitINIT = true;
     }
 
-    /**
-     * This function adds pixels to the edges of every block so that the player
-     * wont intersect with the edge itself.
-     *
-     * @param b
-     */
-    private void correctEdgePixels(Block b) {
+    private void createPath(GraphObject fruitObject) {
+        path = new ArrayList<>();
+        path.add(playerObject);
+        path.addAll(blocksArrayList);
+        path.add(fruitObject);
 
-        int [] LeftTop = converter.gps2Pixels(b.getMaxLeft());
-        LeftTop[0] = LeftTop[0]-2;
-        LeftTop[1] = LeftTop[1]-2;
-        Point3D leftTopPixels = new Point3D(LeftTop[0], LeftTop[1]);
-        Point3D leftTopGPS = converter.toCoords(LeftTop[0], LeftTop[1]);
-        GraphObject leftTopObject = new GraphObject(leftTopPixels, leftTopGPS);
-        graphObjects.add(leftTopObject);
-       //pointsGPS.add(b.getMaxLeft());
-
-        int [] RightTop = converter.gps2Pixels(b.getMaxRight());
-        RightTop[0] = RightTop[0]+2;
-        RightTop[1] = RightTop[1]-2;
-        Point3D rightTopPixels = new Point3D(RightTop[0], RightTop[1]);
-        Point3D rightTopGPS = converter.toCoords(RightTop[0], RightTop[1]);
-        GraphObject rightTopObject = new GraphObject(rightTopPixels, rightTopGPS);
-        graphObjects.add(rightTopObject);
-       // pixelArray.add(RightTop);
-       // pointsGPS.add(b.getMaxRight());
-
-        int [] RightBottom = converter.gps2Pixels(b.getMinRight());
-        RightBottom[0] = RightBottom[0]+2;
-        RightBottom[1] = RightBottom[1]+2;
-        Point3D rightBotPixels = new Point3D(RightBottom[0], RightBottom[1]);
-        Point3D rightBotGPS = converter.toCoords(RightBottom[0], RightBottom[1]);
-        GraphObject rightBotObject = new GraphObject(rightBotPixels, rightBotGPS);
-        graphObjects.add(rightBotObject);
-      //  pixelArray.add(RightBottom);
-      //  pointsGPS.add(b.getMinRight());
-
-        int [] LeftBottom = converter.gps2Pixels(b.getMinLeft());
-        LeftBottom[0] = LeftBottom[0]-2;
-        LeftBottom[1] = LeftBottom[1]+2;
-        Point3D leftBotPixels = new Point3D(LeftBottom[0], LeftBottom[1]);
-        Point3D leftBotGPS = converter.toCoords(LeftBottom[0], LeftBottom[1]);
-        GraphObject leftBotObject = new GraphObject(leftBotPixels, leftBotGPS);
-        graphObjects.add(leftBotObject);
-     //   pixelArray.add(LeftBottom);
-      //  pointsGPS.add(b.getMinLeft());
+        allPaths.add(path);
     }
 
-    /**
-     * This function takes all the points and creates graph objects for them, these objects will
-     * be used when building the graph for the algorithm.
-     */
-/*    private void createGraphObject() {
-        int index = 0;
-        graphObjects = new ArrayList<>();
-        for (int[] i: pixelArray) {
-            Point3D p = new Point3D(i[0], i[1]);
-            GraphObject graphObject = new GraphObject(p, pointsGPS.get(index));
-            graphObjects.add(graphObject);
-            index++;
-        }
-    }*/
-
-    /**
-     * This function checks for every two points except for the fruit if they can create a line
-     * between them. The line can only be created if they have a line of sight - which means there
-     * are no objects between them.
-     */
-    private void addNeighbors() {
+    private void addNeighbors(ArrayList<GraphObject> graphObjectArrayList) {
         Queue<GraphObject> BFS = new LinkedList<>();
 
-        int fruitIndex = graphObjects.size()-1;
+        int fruitIndex = graphObjectArrayList.size()-1;
 
-        GraphObject player  = graphObjects.get(0);
+        GraphObject player  = graphObjectArrayList.get(0);
         BFS.add(player);
 
         while(!BFS.isEmpty()) {
             GraphObject pollObject = BFS.poll();
             pollObject.setDone(true);
 
-            for (GraphObject graphObject : graphObjects) {
+            for (GraphObject graphObject : graphObjectArrayList) {
                 if(graphObject.isDone()) continue;
                 else if(graphObject.getID() == pollObject.getID()) continue;
                 else if(!lineOfSight.checkIntersection(pollObject.getPointPixels(), graphObject.getPointPixels())){
@@ -236,118 +203,80 @@ public class Calculations {
                 }
             }
         }
-
-        for(GraphObject GO : graphObjects) GO.setDone(false);
+        for(GraphObject GO : graphObjectArrayList) GO.setDone(false);
     }
 
-    /**
-     * This function creates a graph from the GraphObject.
-     */
-    private void createGraph() {
-        for(int i = 0; i < graphObjects.size(); i++) {
-            Node node = new Node("" + i);
-            graph.add(node);
-        }
-
-        for (GraphObject graphObject : graphObjects) {
-            for (GraphObject neighbor : graphObject.getNeighbors()) {
-                graph.addEdge("" + graphObject.getID(), "" + neighbor.getID(), graphObject.getPointPixels().distance2D(neighbor.getPointPixels()));
+    private Graph createGraph(ArrayList<GraphObject> graphObjectArrayList) {
+        graph = new Graph();
+        //int id = 0;
+        for(int i = 0; i < graphObjectArrayList.size(); i++) {
+            if(!graphObjectArrayList.get(i).getNeighbors().isEmpty()){
+                Node node = new Node("" + i);
+                node.set_id(i);
+                graph.add(node);
             }
         }
+
+        Node node = new Node("" + (graphObjectArrayList.size()-1));
+        node.set_id(graphObjectArrayList.size()-1);
+        graph.add(node);
+
+        for (int i= 0; i < graphObjectArrayList.size(); i ++) {
+            for (GraphObject neighbor : graphObjectArrayList.get(i).getNeighbors()) {
+                graph.addEdge("" + graphObjectArrayList.get(i).getID(), "" + neighbor.getID(), graphObjectArrayList.get(i).getPointPixels().distance2D(neighbor.getPointPixels()));
+            }
+        }
+        return graph;
     }
 
-    /**
-     * This function calculates the path for the player by using the dijkstra Algorithm on the given graph.
-     */
-    private void createPath() {
+    private void createPath(Graph g) {
+        shortestPath = new ArrayList<>();
+        target = path.size()-1;
         Graph_Algo.dijkstra(graph, "0");
-        Node b = graph.getNodeByName("" + (graphObjects.size()-1));
+        Node b = graph.getNodeByName("" + (target));
         pathsDistance.add(b.getDist());
         shortestPath = b.getPath();
-      //  shortestPath.add("" + graphObjects.get(graphObjects.size()-1).getID());
-
+        allShortestPaths.add(shortestPath);
     }
 
-    /**
-     * This function adds the path calculated into the ArrayList of paths.
-     */
-    private void addPath() {
-        paths.add(shortestPath);
-    }
-
-    /**
-     * This function resets all the lists in order to calculate the next round.
-     */
-    private void reset() {
-       // pointsGPS = new ArrayList<>();
-       // pixelArray = new ArrayList<>();
-        //graphObjects = new ArrayList<>();
-        shortestPath = new ArrayList<>();
-       // GraphObject.resetID();
-
-        graph = new Graph();
-    }
-
-    /**
-     * This function returns the shortest path from all the given paths.
-     */
-    private void minPath() {
-        if(pathsDistance.isEmpty()) return;
+    private void getMinPath() {
         int minIndex = 0;
-        double minDistance = pathsDistance.get(0);
-        for(int i = 1; i < pathsDistance.size(); i++) {
-            if(pathsDistance.get(i) < minDistance) {
-                minDistance = pathsDistance.get(i);
+        if(pathsDistance.isEmpty()) return;
+        if(pathsDistance.size()==1) return;
+        double min = pathsDistance.get(0);
+
+        for (int i = 1; i < pathsDistance.size(); i ++) {
+            if(pathsDistance.get(i) < min) {
+                min = pathsDistance.get(i);
                 minIndex = i;
             }
         }
 
-        shortestPath = paths.get(minIndex);
-        for (int i = 0; i < shortestPath.size(); i++) {
-            GraphObject tmp = returnThisObject(Integer.parseInt(shortestPath.get(i)));
-            finalPath.add(tmp);
+        createFinalPath(allPaths.get(minIndex), allShortestPaths.get(minIndex), minIndex);
+    }
+
+    private void createFinalPath(ArrayList<GraphObject> graphObjects, ArrayList<String> shortestPath, int index) {
+        finalPath = new ArrayList<>();
+        for (String s : shortestPath) {
+            for (GraphObject graphObject : graphObjects) {
+                if(Integer.parseInt(s)== graphObject.getID()) {
+                    finalPath.add(graphObject);
+                    break;
+                }
+            }
         }
-        finalPath.add(fruitObjects.get(minIndex));
+        finalPath.add(fruitArrayList.get(index));
+        targetFruit = finalPath.get(finalPath.size()-1);
     }
 
-/*    public void clearGraph() {
-        graph.clear_meta_data();
-    }*/
-
-    private GraphObject returnThisObject(int ID) {
-        for(GraphObject GO : graphObjects) {
-            if(GO.getID() == ID) return GO;
+    private void clearNeighbors(ArrayList<GraphObject> graphObjects) {
+        for(GraphObject graphObject : graphObjects) {
+            graphObject.clearNeighbors();
         }
-        return null;
     }
 
-    public ArrayList<GraphObject> getGraphObjects() {
-        return graphObjects;
-    }
+    public ArrayList<GraphObject> getFinalPath() { return finalPath; }
 
-    public void setGraphObjects(ArrayList<GraphObject> graphObjects) {
-        this.graphObjects = graphObjects;
-    }
+    public GraphObject getTargetFruit() { return targetFruit; }
 
-
-    public ArrayList<String> getShortestPath() {
-        return shortestPath;
-    }
-
-    public void setShortestPath(ArrayList<String> shortestPath) {
-        this.shortestPath = shortestPath;
-    }
-
-
-    public Graph getGraph() {
-        return graph;
-    }
-
-    public void setGraph(Graph graph) {
-        this.graph = graph;
-    }
-
-    public ArrayList<GraphObject> getFinalPath() {
-        return finalPath;
-    }
 }

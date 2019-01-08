@@ -79,8 +79,9 @@ public class Controller implements Observer {
         observe(board.getNextPoint());
     }
 
-    private void initServer() {
-        play.setIDs(308566611, 312522329);
+    private void initServer(boolean isAlgo) {
+        if (isAlgo) play.setIDs(308566611, 312522329, 123);
+        else play.setIDs(308566611, 312522329);
         game.getPlayer().setPoint(nextStepPoint);
         play.setInitLocation(game.getPlayer().getPoint().get_y(), game.getPlayer().getPoint().get_x());
         play.start();
@@ -90,6 +91,7 @@ public class Controller implements Observer {
 
     private void loadGame(){
         String path = chooseFilePath();
+        System.out.println(path);
 
         if (path != null) {
             play = new Play(path);
@@ -125,7 +127,7 @@ public class Controller implements Observer {
     }
 
     private void runNextStep() {
-        if(!serverInitiated) initServer();
+        if(!serverInitiated) initServer(false);
 
         play.rotate(azimuth);
         game.update(play);
@@ -134,10 +136,10 @@ public class Controller implements Observer {
     }
 
     private void runAlgo() {
-        if(!serverInitiated) initServer();
+        if(!serverInitiated) initServer(true);
         board.setRunAlgo(true);
 
-        System.out.println("in CLICK RUNALGO");
+        //  System.out.println("in CLICK RUNALGO");
         startThread();
 
         // board.setRunAlgo(true);
@@ -158,7 +160,7 @@ public class Controller implements Observer {
         azimuth = nextPoint.getAzimuth();
 
         if (firstTimeRun) {
-            initServer();
+            initServer(false);
             firstTimeRun = false;
         }
 
@@ -175,17 +177,12 @@ public class Controller implements Observer {
             runNextStep();
         }
 
-/*        //Algorithm mode
-        else if(board.isRunAlgo()) {
-            runAlgo();
-        }*/
-
         // Auto game mode
         else if (board.isRunAutoGame()) {
-            if (board.isFirstClick()) {
+            //if (board.isFirstClick()) {
                 board.setFirstClick(false);
                 startThread();
-            }
+           // }
         }
     }
 
@@ -214,13 +211,14 @@ public class Controller implements Observer {
 
         @Override
         public void run() {
-           // System.out.println("IN RUN THREAD");
             frame.getRunGame().setEnabled(false);
             frame.getRunStepByStep().setEnabled(false);
             frame.getRunAlgo().setEnabled(false);
 
             if (board.isRunAutoGame()) {
+                System.out.println("IN RUN GAME: ");
                 while (play.isRuning()) {
+                    System.out.println("IN SERVER INIT: ");
                     play.rotate(azimuth);
                     game.update(play);
                     board.updateGUI();
@@ -232,14 +230,14 @@ public class Controller implements Observer {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    frame.updateTextLabel(play.getStatistics() + " | Game has ended");
-                    // frame.getRunGame().setEnabled(true);
-                    // frame.getRunStepByStep().setEnabled(true);
-                    // frame.getRunAlgo().setEnabled(true);
-
-                    board.clearGame();
-                    board.clearPlayer();
                 }
+                frame.updateTextLabel(play.getStatistics() + " | Game has ended");
+                frame.getRunGame().setEnabled(true);
+                frame.getRunStepByStep().setEnabled(true);
+                frame.getRunAlgo().setEnabled(true);
+
+                board.clearGame();
+                board.clearPlayer();
             }
 
             else if (board.isRunAlgo()) {
@@ -247,56 +245,51 @@ public class Controller implements Observer {
                 while ((play.isRuning()) && (!game.getFruitArrayList().isEmpty())) {
                     calculations = new Calculations(game, board.getWidth(), board.getHeight());
                     calculations.INIT();
-
                     ArrayList<GraphObject> path = calculations.getFinalPath();
-                    System.out.println("PACMAN PATH: ");
                     for (int i = 0; i < path.size(); i++) {
                         System.out.println(path.get(i).getID());
                     }
-                    System.out.println();
-                    //int targetIndex = Integer.parseInt(path.get(path.size()-1));
-                    GraphObject fruitTarget = path.get(path.size()-1);
-                    Point3D fruit = fruitTarget.getPointGPS();
-                    System.out.println("TARGET: " + fruit.get_x() + ", " + fruit.get_y());
-                    for (int i = 1; i < path.size() && isIN(fruit) && play.isRuning(); i++) {
-                        GraphObject NextMove = path.get(i);
-                        Point3D target = NextMove.getPointGPS();
-
-                       System.out.println("SOURCE: " + game.getPlayer().getPoint().get_x() + ", " + game.getPlayer().getPoint().get_y());
-                       System.out.println("TARGET: " + target.get_x() + ", " + target.get_y());
-                        double[] azimut = coords.azimuth_elevation_dist(game.getPlayer().getPoint(), target);
-                        System.out.println("AZIMUT : " + azimut[0]);
-                        while((isIN(fruit)) && (play.isRuning()) & (!game.getFruitArrayList().isEmpty())) {
+                    System.out.println("------------------------------------");
+                    for (int i = 1; i < path.size(); i++) {
+                        Point3D target = path.get(i).getPointGPS();
+                        if(!isIN(calculations.getTargetFruit().getPointGPS())) break;
+                        while(play.isRuning() && isIN(calculations.getTargetFruit().getPointGPS())) {
+                            if(closeDistance(game.getPlayer().getPoint(), target)) break;
+                            double[] azimut = coords.azimuth_elevation_dist(game.getPlayer().getPoint(), target);
                             play.rotate(azimut[0]);
                             game.update(play);
                             board.updateGUI();
+                            frame.updateTextLabel(play.getStatistics());
                             try {
                                 sleep(60);
-                            }
-                            catch (InterruptedException e) {
+                            } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
-                        game.update(play);
-                        board.updateGUI();
                     }
-                    game.update(play);
-                    board.updateGUI();
+                }
+                frame.updateTextLabel(play.getStatistics() + " | Game has ended");
+            }
+        }
+
+        private boolean isIN(Point3D fruitPoint) {
+            for(Fruit f : game.getFruitArrayList()) {
+                if((fruitPoint.get_x() == f.getPoint().get_x()) && (fruitPoint.get_y() == f.getPoint().get_y())) {
+                    return true;
                 }
             }
+            return false;
         }
+
+        private boolean closeDistance(Point3D source, Point3D target) {
+            double range= 1;
+            if(coords.distance3d(source, target) <= range) return true;
+            return false;
+        }
+
     }
 
 
 
-    private boolean isIN(Point3D fruitPoint) {
-        for(Fruit f : game.getFruitArrayList()) {
-            if((fruitPoint.get_x() == f.getPoint().get_x()) && (fruitPoint.get_y() == f.getPoint().get_y())) {
-               // System.out.println("POINTS EQUAL");
-                return true;
-            }
-        }
-       // System.out.println("POINTS DON'T EQUAL");
-        return false;
-    }
+
 }

@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 public class LineOfSight {
 
-    private static boolean isCreated = false;
-
     private pixelsCoordsConverter converter;
 
     private ArrayList<Block> blockArrayList;
@@ -36,7 +34,7 @@ public class LineOfSight {
 
         converter = new pixelsCoordsConverter( width, height, 35.20238, 35.21236, 32.10190, 32.10569);
 
-        if (!isCreated) createRectangles();
+        createRectangles();
     }
 
     /**
@@ -56,8 +54,6 @@ public class LineOfSight {
 
             blockRectangles.add(block);
         }
-
-        isCreated = true;
     }
 
     /**

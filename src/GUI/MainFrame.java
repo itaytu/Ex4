@@ -53,7 +53,7 @@ public class MainFrame extends JFrame {
 
         pack();
 
-        setSize(1433, 642);
+        setSize(1433,642);
         setIconImage(icon);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

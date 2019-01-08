@@ -8,7 +8,7 @@ public class GraphObject {
 
     Point3D pointPixels, pointGPS;
     private int ID;
-    private static int IDCounter = 0;
+    private static int IDCounter = 1;
     ArrayList<GraphObject> neighbors;
     private boolean isDone;
 
@@ -72,8 +72,13 @@ public class GraphObject {
     }
 
     public static void resetID() {
-        IDCounter = 0;
+        IDCounter = 1;
     }
 
     public static void decreaseID() { IDCounter = IDCounter -1; }
+
+    public void clearNeighbors() {
+        neighbors.clear();
+    }
+
 }
