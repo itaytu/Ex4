@@ -170,6 +170,10 @@ public class Calculations {
         fruitINIT = true;
     }
 
+    /**
+     * This function creates an ArrayList of GraphObjects containing the player, block edges and a given fruit.
+     * @param fruitObject
+     */
     private void createPath(GraphObject fruitObject) {
         path = new ArrayList<>();
         path.add(playerObject);
@@ -179,6 +183,11 @@ public class Calculations {
         allPaths.add(path);
     }
 
+    /**
+     * This function takes the GraphObject of the player and edges and calculates each objects neighbors.
+     * The calculation is made by using the BFS algorithm.
+     * @param graphObjectArrayList
+     */
     private void addNeighbors(ArrayList<GraphObject> graphObjectArrayList) {
         Queue<GraphObject> BFS = new LinkedList<>();
 
@@ -206,6 +215,11 @@ public class Calculations {
         for(GraphObject GO : graphObjectArrayList) GO.setDone(false);
     }
 
+    /**
+     *
+     * @param graphObjectArrayList
+     * @return
+     */
     private Graph createGraph(ArrayList<GraphObject> graphObjectArrayList) {
         graph = new Graph();
         //int id = 0;
