@@ -194,11 +194,20 @@ public class Board extends JPanel implements MouseListener {
 
     private void loadImages() {
         try {
-            map = ImageIO.read(new File("Ariel1.png"));
-            pacman = ImageIO.read(new File("badPacman.png"));
-            fruit = ImageIO.read(new File("fruit.png"));
-            ghost = ImageIO.read(new File ("ghost.png"));
-            player = ImageIO.read(new File ("pacman.png"));
+            File map1 = new File(getClass().getClassLoader().getResource("Ariel1.png").getFile());
+            map = ImageIO.read(map1);
+
+            File pacman1 = new File(getClass().getClassLoader().getResource("badPacman.png").getFile());
+            pacman = ImageIO.read(pacman1);
+
+            File fruit1 = new File(getClass().getClassLoader().getResource("fruit.png").getFile());
+            fruit = ImageIO.read(fruit1);
+
+            File ghost1 = new File(getClass().getClassLoader().getResource("ghost.png").getFile());
+            ghost = ImageIO.read(ghost1);
+
+            File player1 = new File(getClass().getClassLoader().getResource("pacman.png").getFile());
+            player = ImageIO.read(player1);
         } catch (Exception e) {
             e.printStackTrace();
         }

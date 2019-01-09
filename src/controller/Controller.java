@@ -257,7 +257,7 @@ public class Controller implements Observer {
                     }
                 }
                 // Make some rotation to end the game, update Play
-                play.rotate(0);
+              //  play.rotate(0);
                 game.update(play);
                 System.out.println(play.isRuning());
                 frame.updateTextLabel(play.getStatistics() + " | Game has ended");
