@@ -110,14 +110,6 @@ public class Board extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-<<<<<<< HEAD
-        int hereX = e.getX();
-        int hereY = e.getY();
-
-        System.out.println("BOARD CLICK: " + hereX + ", " + hereY);
-        System.out.println("WIDTH: " + this.getWidth() + ", HEIGHT: " + this.getHeight());
-=======
->>>>>>> Bugs_fix_and_statistics
         if (addPlayer || stepByStep || runAutoGame) {
             int x = e.getX();
             int y = e.getY();
