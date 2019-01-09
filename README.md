@@ -9,7 +9,7 @@ The game has a set timer for the game length, the player can gather points by ea
 there are no more fruits or when the timer is over. The player can also lose points if there is a collision with a block, or the game
 borders, or the ghosts. The points gathered by the player are shown on top of the game board.
 
-In the project we've implemented the use of the * *Observer* * design pattern, and the * *MVC* * design pattern.
+In the project we've implemented the use of the *Observer* design pattern, and the *MVC* design pattern.
 
 ## Project Hierarchy
 
