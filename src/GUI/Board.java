@@ -46,7 +46,7 @@ public class Board extends JPanel implements MouseListener {
 
     /**
      * Paints the objects on screen.
-     * @param g
+     * @param g graphics
      */
     @Override
     public void paint(Graphics g) {
@@ -146,11 +146,17 @@ public class Board extends JPanel implements MouseListener {
 
     }
 
+    /**
+     * Clears the player from board
+     */
     public void clearPlayer() {
         game.getPlayer().setPoint(null);
         repaint();
     }
 
+    /**
+     * Clears all game objects from board
+     */
     public void clearGame() {
         game.setPlayer(new Point3D(0,0,0));
         game.getBlockArrayList().clear();
@@ -161,38 +167,77 @@ public class Board extends JPanel implements MouseListener {
         repaint();
     }
 
+    /**
+     * Set the game to a run algorythm mode
+     * @param flag
+     */
     public void setRunAlgo(boolean flag) { runAlgo = flag; }
 
+    /**
+     * Set the game to Add player mode
+     * @param flag
+     */
     public void setAddPlayer(boolean flag) {
         addPlayer = flag;
     }
 
+    /**
+     * Set the game to step by step moe
+     * @param flag
+     */
     public void setStepByStep(boolean flag) { stepByStep = flag; }
 
+    /**
+     * Simple setter to the Game object
+     * @param game
+     */
     public void setGame(Game game) {
         this.game = game;
     }
 
+    /**
+     * Sets the loading variable, updates when game is loaded or not
+     * @param isLoaded
+     */
     public void setLoaded(boolean isLoaded) {
         loaded = isLoaded;
     }
 
+    /**
+     * Sets if the game is in auto mode
+     * @param flag
+     */
     public void setRunAutoGame(boolean flag) {
         runAutoGame = flag;
     }
 
+    /**
+     * Gets the observable object, that updates on every mouse click, Implies the next point the pacman should go
+     * @return Observable NextPoint
+     */
     public NextPoint getNextPoint() {
         return nextPoint;
     }
 
+    /**
+     * Tells if it a first click on screen
+     * @return is first click
+     */
     public boolean isFirstClick() {
         return firstClick;
     }
 
+    /**
+     * Sets if first click
+     * @param isClicked
+     */
     public void setFirstClick(boolean isClicked) {
         firstClick = isClicked;
     }
 
+    /**
+     * Load images of the objects on screen. Map, pacmans, ghost, and fruit.
+     */
     private void loadImages() {
         try {
             File map1 = new File(getClass().getClassLoader().getResource("Ariel1.png").getFile());
@@ -216,22 +261,41 @@ public class Board extends JPanel implements MouseListener {
         repaint();
     }
 
+    /**
+     * Calls to the repaint method
+     */
     public void updateGUI() {
         repaint();
     }
 
+    /**
+     * Tells if this is the run step by step mode
+     * @return if this is the current mode
+     */
     public boolean isRunStepByStep() {
         return stepByStep;
     }
 
+    /**
+     * Tells if this is the run auto game mode
+     * @return if this is the current mode
+     */
     public boolean isRunAutoGame() {
         return runAutoGame;
     }
 
+    /**
+     * Tells if this add player mode
+     * @return if this is the current mode
+     */
     public boolean isAddPlayer() {
         return addPlayer;
     }
 
+    /**
+     * Tells if this is the run run algorythm mode
+     * @return if this is the current mode
+     */
     public boolean isRunAlgo() { return runAlgo; }
 
     public void showMessagePrompt(String msg) {

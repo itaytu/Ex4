@@ -7,6 +7,9 @@ package Graph;
 
 import java.util.ArrayList;
 
+/**
+ * This class is from the Lecturer JAR: Graph_v0.11
+ */
 public class Node
 {
     private static int _counter = 0;
