@@ -3,7 +3,9 @@ package Elements;
 import Geom.Point3D;
 
 import java.util.ArrayList;
-
+/**
+ * This class represents a simple Block Object holding the necessary information.
+ */
 public class Block {
 
 	private int ID;
@@ -15,6 +17,10 @@ public class Block {
 
 	private ArrayList<Point3D> points;
 
+	/**
+	 * Constructor from a given CSV file.
+	 * @param data
+	 */
 	public Block(String[] data) {
 		type = 'B';
 		ID = Integer.parseInt(data[1]);
@@ -45,44 +51,35 @@ public class Block {
 	}
 
 
-	public Point3D getMaxRight() {
-		return MaxRight;
-	}
-
-	public void setMaxRight(Point3D maxRight) {
-		this.MaxRight = maxRight;
-	}
-
-
-	public Point3D getMinLeft() {
-		return MinLeft;
-	}
-
-	public void setMinLeft(Point3D minLeft) {
-		this.MinLeft = minLeft;
-	}
-
-
-	public Point3D getMinRight() {
-		return MinRight;
-	}
-
-	public void setMinRight(Point3D minRight) {
-		MinRight = minRight;
-	}
-
-
+	/**
+	 * Get Top Left corner.
+	 * @return
+	 */
 	public Point3D getMaxLeft() {
 		return MaxLeft;
 	}
 
-	public void setMaxLeft(Point3D maxLeft) {
-		MaxLeft = maxLeft;
+	/**
+	 * Get Top Right corner.
+	 * @return
+	 */
+	public Point3D getMaxRight() {
+		return MaxRight;
 	}
 
-
-	public ArrayList<Point3D> getPoints() {
-		return points;
+	/**
+	 * Get Bottom Right corner.
+	 * @return
+	 */
+	public Point3D getMinRight() {
+		return MinRight;
 	}
 
+	/**
+	 * Get Bottom Left corner.
+	 * @return
+	 */
+	public Point3D getMinLeft() {
+		return MinLeft;
+	}
 }

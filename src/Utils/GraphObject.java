@@ -4,6 +4,11 @@ import Geom.Point3D;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the Graph Object needed in order to calculate the Algorithm.
+ * The Graph Object is a generic object containing an ID, Point3D in GPS & Pixels, Neighbors, and a boolean
+ * flag to check if the object has finished calculations in the BFS algorithm.
+ */
 public class GraphObject {
 
     Point3D pointPixels, pointGPS;
@@ -12,6 +17,11 @@ public class GraphObject {
     ArrayList<GraphObject> neighbors;
     private boolean isDone;
 
+    /**
+     * The constructor initiates the object Point3D in GPS & Pixels, the ID and the neighbors ArrayList.
+     * @param pointPixels
+     * @param pointGPS
+     */
     public GraphObject(Point3D pointPixels, Point3D pointGPS) {
         this.pointPixels = pointPixels;
         this.pointGPS = pointGPS;
@@ -21,30 +31,30 @@ public class GraphObject {
         isDone = false;
     }
 
+    /**
+     * Simple get Method to return the ArrayList containing the neighbors of this object.
+     * @return neighbors
+     */
 
     public ArrayList<GraphObject> getNeighbors() {
         return neighbors;
     }
 
-    public void setNeighbors(ArrayList<GraphObject> neighbors) {
-        this.neighbors = neighbors;
-    }
 
-
+    /**
+     * Simple get Method to return the Point3D in pixels and GPS.
+     * @return pixel & GPS point
+     */
     public Point3D getPointPixels() {
         return pointPixels;
     }
 
-    public void setPointPixels(Point3D point) {
-        this.pointPixels = point;
-    }
-
-
     public Point3D getPointGPS() { return pointGPS; }
 
-    public void setPointGPS(Point3D point) { this.pointGPS = point; }
-
-
+    /**
+     * Simple set & get Method for the objects ID.
+     * @return
+     */
     public int getID() {
         return ID;
     }
@@ -53,7 +63,10 @@ public class GraphObject {
         this.ID = ID;
     }
 
-
+    /**
+     * Simple set & get method to check if the object is done calculating.
+     * @return
+     */
     public boolean isDone() {
         return isDone;
     }
@@ -62,21 +75,21 @@ public class GraphObject {
         isDone = done;
     }
 
-
-    public static int getIDCounter() {
-        return IDCounter;
-    }
-
-    public static void setIDCounter(int IDCounter) {
-        GraphObject.IDCounter = IDCounter;
-    }
-
+    /**
+     * Resets the static ID counter.
+     */
     public static void resetID() {
         IDCounter = 1;
     }
 
+    /**
+     * Decreases the static ID counter by 1.
+     */
     public static void decreaseID() { IDCounter = IDCounter -1; }
 
+    /**
+     * Clears the object neighbors.
+     */
     public void clearNeighbors() {
         neighbors.clear();
     }

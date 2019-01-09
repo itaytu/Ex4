@@ -3,6 +3,7 @@ package GUI;
 import Converters.Map;
 import Elements.*;
 import Geom.Point3D;
+import Utils.NextPoint;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -92,11 +93,11 @@ public class Board extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-    //    int hereX = e.getX();
-     //   int hereY = e.getY();
+        int hereX = e.getX();
+        int hereY = e.getY();
 
-      //  System.out.println("BOARD CLICK: " + hereX + ", " + hereY);
-      //  System.out.println("WIDTH: " + this.getWidth() + ", HEIGHT: " + this.getHeight());
+        System.out.println("BOARD CLICK: " + hereX + ", " + hereY);
+        System.out.println("WIDTH: " + this.getWidth() + ", HEIGHT: " + this.getHeight());
         if (addPlayer || stepByStep || runAutoGame) {
             int x = e.getX();
             int y = e.getY();

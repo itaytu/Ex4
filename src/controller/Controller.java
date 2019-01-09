@@ -8,6 +8,7 @@ import GUI.MainFrame;
 import Geom.Point3D;
 import Robot.Play;
 import Utils.GraphObject;
+import Utils.NextPoint;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -16,6 +17,16 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * This class represents the Controller of the project, this class is in charge of the communication
+ * between the UI and the logical classes. The class uses the Observer design pattern in order to create
+ * updates and changes happening both from logical and UI interaction.
+ *
+ * The main methods of this class are the update for the observer, The initiation of the action listeners
+ * and the Thread class for running the game.
+ *
+ * @author Itay Tuson and Sagi Oshri.
+ */
 public class Controller implements Observer {
 
     private MyCoords coords = new MyCoords();
@@ -30,16 +41,25 @@ public class Controller implements Observer {
     private Point3D nextStepPoint;
     private double azimuth;
 
+    /**
+     * The constructor of this class initiates the UI part and the logic functions used by the UI.
+     */
     public Controller() {
         initView();
         initListeners();
     }
 
+    /**
+     * UI initiation. the Main frame with the menu and the board holding the map game.
+     */
     private void initView() {
         board = new Board();
         frame = new MainFrame(board);
     }
 
+    /**
+     * Action listeners for the menu items.
+     */
     private void initListeners() {
         frame.getLoadGame().addActionListener(e -> {
             loadGame();
@@ -79,6 +99,10 @@ public class Controller implements Observer {
         observe(board.getNextPoint());
     }
 
+    /**
+     * Server initiation for running the game.
+     * @param isAlgo
+     */
     private void initServer(boolean isAlgo) {
         if (isAlgo) play.setIDs(308566611, 312522329, 123);
         else play.setIDs(308566611, 312522329);
@@ -89,6 +113,9 @@ public class Controller implements Observer {
         serverInitiated = true;
     }
 
+    /**
+     * The tab opened to load a game.
+     */
     private void loadGame(){
         String path = chooseFilePath();
         System.out.println(path);
@@ -104,6 +131,9 @@ public class Controller implements Observer {
         }
     }
 
+    /**
+     * Setting the autoRun mode.
+     */
     private void runGame() {
         board.setRunAutoGame(true);
     }
@@ -113,19 +143,31 @@ public class Controller implements Observer {
 
     }
 
+    /**
+     * Enable adding a player to the board.
+     */
     private void addPlayer() {
         board.setAddPlayer(true);
     }
 
+    /**
+     * Removing the player from the board.
+     */
     private void removePlayer() {
         board.clearPlayer();
         board.setAddPlayer(true);
     }
 
+    /**
+     * Setting the run StepByStep mode.
+     */
     private void runStepByStep() {
         board.setStepByStep(true);
     }
 
+    /**
+     * When in autoRun mode, moves the player in the desired direction and updates the game.
+     */
     private void runNextStep() {
         if(!serverInitiated) initServer(false);
 
@@ -135,16 +177,21 @@ public class Controller implements Observer {
         board.updateGUI();
     }
 
+    /**
+     * Setting the run Algorithm mode.
+     */
     private void runAlgo() {
         if(!serverInitiated) initServer(true);
         board.setRunAlgo(true);
 
-        //  System.out.println("in CLICK RUNALGO");
         startThread();
 
         // board.setRunAlgo(true);
     }
 
+    /**
+     * Starting the thread for the game.
+     */
     private void startThread() {
         //if(!serverInitiated) initServer();
 
@@ -152,6 +199,11 @@ public class Controller implements Observer {
         movement.start();
     }
 
+    /**
+     * This function is in charge of checking and making updates when needed, by observing the board.
+     * @param o
+     * @param arg
+     */
     @Override
     public void update(Observable o, Object arg) {
         NextPoint nextPoint = ((NextPoint) o).getNextPoint();
@@ -190,6 +242,10 @@ public class Controller implements Observer {
         o.addObserver(this);
     }
 
+    /**
+     * Chosing a game file.
+     * @return
+     */
     private String chooseFilePath() {
 
         JFileChooser fileChooser = new JFileChooser();
@@ -207,6 +263,20 @@ public class Controller implements Observer {
         return null;
     }
 
+
+    /**
+     * This inner class is in charge of the thread running the game.
+     * The thread runs on two different modes.
+     * 1 - Auto run. 2 - Algorithm run.
+     *
+     * The Auto run mode gets the Azimuth by observing the clicks on the board and calculating them,
+     * and then moves the player in the desired direction.
+     *
+     * The Algorithm mode calculates the shortest path from the player to one fruit
+     * out of all the fruits left on the board by using the Calculations class.
+     * The calculation happens while the player moves and checks in real time what path is the best
+     * option at the time.
+     */
     public class PlayerMovement extends Thread {
 
         @Override
@@ -215,10 +285,10 @@ public class Controller implements Observer {
             frame.getRunStepByStep().setEnabled(false);
             frame.getRunAlgo().setEnabled(false);
 
+            //Auto run mode
             if (board.isRunAutoGame()) {
-                System.out.println("IN RUN GAME: ");
+
                 while (play.isRuning()) {
-                    System.out.println("IN SERVER INIT: ");
                     play.rotate(azimuth);
                     game.update(play);
                     board.updateGUI();
@@ -240,16 +310,12 @@ public class Controller implements Observer {
                 board.clearPlayer();
             }
 
+            //Algorithm run mode
             else if (board.isRunAlgo()) {
-
                 while ((play.isRuning()) && (!game.getFruitArrayList().isEmpty())) {
                     calculations = new Calculations(game, board.getWidth(), board.getHeight());
                     calculations.INIT();
                     ArrayList<GraphObject> path = calculations.getFinalPath();
-                    for (int i = 0; i < path.size(); i++) {
-                        System.out.println(path.get(i).getID());
-                    }
-                    System.out.println("------------------------------------");
                     for (int i = 1; i < path.size(); i++) {
                         Point3D target = path.get(i).getPointGPS();
                         if(!isIN(calculations.getTargetFruit().getPointGPS())) break;
@@ -272,6 +338,11 @@ public class Controller implements Observer {
             }
         }
 
+        /**
+         * This function checks if the fruit target is still on board and hasn't been eaten by others.
+         * @param fruitPoint
+         * @return
+         */
         private boolean isIN(Point3D fruitPoint) {
             for(Fruit f : game.getFruitArrayList()) {
                 if((fruitPoint.get_x() == f.getPoint().get_x()) && (fruitPoint.get_y() == f.getPoint().get_y())) {
@@ -281,15 +352,17 @@ public class Controller implements Observer {
             return false;
         }
 
+        /**
+         * This function checks if the player is close enough to the target.
+         * @param source
+         * @param target
+         * @return
+         */
         private boolean closeDistance(Point3D source, Point3D target) {
             double range= 1;
             if(coords.distance3d(source, target) <= range) return true;
             return false;
         }
-
     }
-
-
-
 
 }
