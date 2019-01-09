@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-<<<<<<< HEAD
 /**
  * This class represents the Controller of the project, this class is in charge of the communication
  * between the UI and the logical classes. The class uses the Observer design pattern in order to create
@@ -29,9 +28,7 @@ import java.util.Observer;
  *
  * @author Itay Tuson and Sagi Oshri.
  */
-=======
 
->>>>>>> Bugs_fix_and_statistics
 public class Controller implements Observer {
 
     private MyCoords coords = new MyCoords();
@@ -190,10 +187,7 @@ public class Controller implements Observer {
     private void runAlgo() {
         if(!serverInitiated) initServer(true);
         board.setRunAlgo(true);
-<<<<<<< HEAD
 
-=======
->>>>>>> Bugs_fix_and_statistics
         startThread();
     }
 
@@ -289,10 +283,7 @@ public class Controller implements Observer {
 
             //Auto run mode
             if (board.isRunAutoGame()) {
-<<<<<<< HEAD
 
-=======
->>>>>>> Bugs_fix_and_statistics
                 while (play.isRuning()) {
                     play.rotate(azimuth);
                     game.update(play);
@@ -315,20 +306,11 @@ public class Controller implements Observer {
 
             //Algorithm run mode
             else if (board.isRunAlgo()) {
-<<<<<<< HEAD
-                while ((play.isRuning()) && (!game.getFruitArrayList().isEmpty())) {
-                    calculations = new Calculations(game, board.getWidth(), board.getHeight());
-                    calculations.INIT();
-                    ArrayList<GraphObject> path = calculations.getFinalPath();
-=======
+
                 while ((play.isRuning() && !game.getFruitArrayList().isEmpty())) {
                     calculations = new Calculations(game, board.getWidth(), board.getHeight());
                     calculations.INIT();
                     ArrayList<GraphObject> path = calculations.getFinalPath();
-
-
-                    System.out.println(path.size());
->>>>>>> Bugs_fix_and_statistics
                     for (int i = 1; i < path.size(); i++) {
                         Point3D target = path.get(i).getPointGPS();
                         if(!isIN(calculations.getTargetFruit().getPointGPS())) break;
@@ -382,8 +364,4 @@ public class Controller implements Observer {
             return false;
         }
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> Bugs_fix_and_statistics
 }
