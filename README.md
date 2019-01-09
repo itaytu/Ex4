@@ -46,7 +46,7 @@ In the project we've implemented the use of the *Observer* design pattern, and t
  
  ## Short explanation about the Algorithm
  Calculations - This class is the main part for the Auto run mode, The class calculates a path from the player to each fruit while
-                considering the blocks in the way. Each path is calculated with the use of the [dijkstra Algorithm]       (https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
+                considering the blocks in the way. Each path is calculated with the use of the [dijkstra Algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
                 for graphs and with the [BFS algorithm](https://en.wikipedia.org/wiki/Breadth-first_search). After all the paths were
                 calculated the Algorithm finds the shortest path and returns it as the path for the player movement.
  
