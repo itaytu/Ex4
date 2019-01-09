@@ -8,8 +8,7 @@ import java.sql.SQLException;
 
 public class TestMain {
 	
-	public static void main(String[] args) {
-		new Controller();
+	public static void main(String[] args) throws SQLException, ClassNotFoundException {
+		 new Controller();
 	}
-  
 }

@@ -13,6 +13,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 
+/**
+ * The board UI. Paints the game Objects.
+ */
 public class Board extends JPanel implements MouseListener {
 
     private BufferedImage map, pacman, player, fruit, ghost;
@@ -20,13 +23,18 @@ public class Board extends JPanel implements MouseListener {
     private Map mapProperties;
     private NextPoint nextPoint;
 
-    private boolean addPlayer, stepByStep, runAutoGame, loaded, firstClick, runAlgo = false;
-    //private boolean runAlgo = false;
+    private boolean addPlayer, stepByStep, runAutoGame, loaded, firstClick = true, runAlgo = false;
 
+    /** Constructs new Board.
+     */
     public Board() {
         init();
     }
 
+    /**
+     * Inits the board with a new game (the models), and the observable object: NextPoint.
+     * Loading object images, and inits the mouse click listener.
+     */
     private void init() {
         game = new Game();
         nextPoint = new NextPoint();
@@ -35,6 +43,10 @@ public class Board extends JPanel implements MouseListener {
         addMouseListener(this);
     }
 
+    /**
+     * Paints the objects on screen.
+     * @param g
+     */
     @Override
     public void paint(Graphics g) {
         int h = this.getHeight();
@@ -89,14 +101,14 @@ public class Board extends JPanel implements MouseListener {
         }
     }
 
+    /**
+     * Handles mouse clicks.
+     * When the click is targeted to a game mode, like Auto Game or
+     * @param e
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
 
-    //    int hereX = e.getX();
-     //   int hereY = e.getY();
-
-      //  System.out.println("BOARD CLICK: " + hereX + ", " + hereY);
-      //  System.out.println("WIDTH: " + this.getWidth() + ", HEIGHT: " + this.getHeight());
         if (addPlayer || stepByStep || runAutoGame) {
             int x = e.getX();
             int y = e.getY();
@@ -105,7 +117,6 @@ public class Board extends JPanel implements MouseListener {
             Point3D newPoint = mapProperties.toCoords(x, y);
 
             if (addPlayer) {
-
                 nextPoint.setPoints(newPoint, newPoint);
             }
 
@@ -214,6 +225,5 @@ public class Board extends JPanel implements MouseListener {
 
     public void showMessagePrompt(String msg) {
         JOptionPane.showMessageDialog(null, "Game ended.\n" + msg);
-
     }
 }

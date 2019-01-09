@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 class LineOfSightTest {

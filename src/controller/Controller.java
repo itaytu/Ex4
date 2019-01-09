@@ -12,9 +12,11 @@ import Utils.GraphObject;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+
 
 public class Controller implements Observer {
 
@@ -25,7 +27,8 @@ public class Controller implements Observer {
     private Play play;
     private Calculations calculations;
     private MainFrame frame;
-    private boolean firstTimeRun = true, serverInitiated = false;
+    private boolean serverInitiated = false;
+    private final int MACHINE_PLAY_ID = 1234;
 
     private Point3D nextStepPoint;
     private double azimuth;
@@ -44,10 +47,6 @@ public class Controller implements Observer {
         frame.getLoadGame().addActionListener(e -> {
             loadGame();
             frame.getAddPlayer().setEnabled(true);
-        });
-
-        frame.getSaveGame().addActionListener(e -> {
-            saveGame();
         });
 
         frame.getRunGame().addActionListener(e -> {
@@ -75,12 +74,22 @@ public class Controller implements Observer {
             frame.getAddPlayer().setEnabled(true);
         });
 
+        frame.getShowStats().addActionListener(e -> {
+            try {
+                new StatisticsController();
+            } catch (ClassNotFoundException | SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
+
         // Observe the NextPoint object from the board
         observe(board.getNextPoint());
     }
 
     private void initServer(boolean isAlgo) {
-        if (isAlgo) play.setIDs(308566611, 312522329, 123);
+        if (isAlgo) {
+            play.setIDs(308566611, MACHINE_PLAY_ID);
+        }
         else play.setIDs(308566611, 312522329);
         game.getPlayer().setPoint(nextStepPoint);
         play.setInitLocation(game.getPlayer().getPoint().get_y(), game.getPlayer().getPoint().get_x());
@@ -106,11 +115,7 @@ public class Controller implements Observer {
 
     private void runGame() {
         board.setRunAutoGame(true);
-    }
-
-    // TODO: Fix, need to send the game data.
-    private void saveGame() {
-
+        if(!serverInitiated) initServer(false);
     }
 
     private void addPlayer() {
@@ -124,30 +129,23 @@ public class Controller implements Observer {
 
     private void runStepByStep() {
         board.setStepByStep(true);
+        if(!serverInitiated) initServer(false);
     }
 
     private void runNextStep() {
-        if(!serverInitiated) initServer(false);
-
         play.rotate(azimuth);
         game.update(play);
-
+        frame.updateTextLabel(play.getStatistics());
         board.updateGUI();
     }
 
     private void runAlgo() {
         if(!serverInitiated) initServer(true);
         board.setRunAlgo(true);
-
-        //  System.out.println("in CLICK RUNALGO");
         startThread();
-
-        // board.setRunAlgo(true);
     }
 
     private void startThread() {
-        //if(!serverInitiated) initServer();
-
         Thread movement = new PlayerMovement();
         movement.start();
     }
@@ -159,11 +157,7 @@ public class Controller implements Observer {
         nextStepPoint = nextPoint.getPoint();
         azimuth = nextPoint.getAzimuth();
 
-        if (firstTimeRun) {
-            initServer(false);
-            firstTimeRun = false;
-        }
-
+        // Adding player click
         if (board.isAddPlayer()) {
             Pacman newPlayer = new Pacman(nextStepPoint.get_x(), nextStepPoint.get_y());
             game.addPlayer(newPlayer);
@@ -172,17 +166,17 @@ public class Controller implements Observer {
             board.updateGUI();
         }
 
-        // Step by step mode
+        // Step by step mode click
         else if (board.isRunStepByStep()) {
             runNextStep();
         }
 
-        // Auto game mode
+        // Auto game mode click
         else if (board.isRunAutoGame()) {
-            //if (board.isFirstClick()) {
+            if (board.isFirstClick()) {
                 board.setFirstClick(false);
                 startThread();
-           // }
+            }
         }
     }
 
@@ -216,9 +210,7 @@ public class Controller implements Observer {
             frame.getRunAlgo().setEnabled(false);
 
             if (board.isRunAutoGame()) {
-                System.out.println("IN RUN GAME: ");
                 while (play.isRuning()) {
-                    System.out.println("IN SERVER INIT: ");
                     play.rotate(azimuth);
                     game.update(play);
                     board.updateGUI();
@@ -235,21 +227,17 @@ public class Controller implements Observer {
                 frame.getRunGame().setEnabled(true);
                 frame.getRunStepByStep().setEnabled(true);
                 frame.getRunAlgo().setEnabled(true);
-
-                board.clearGame();
-                board.clearPlayer();
+                board.setLoaded(false);
             }
 
             else if (board.isRunAlgo()) {
-
-                while ((play.isRuning()) && (!game.getFruitArrayList().isEmpty())) {
+                while ((play.isRuning() && !game.getFruitArrayList().isEmpty())) {
                     calculations = new Calculations(game, board.getWidth(), board.getHeight());
                     calculations.INIT();
                     ArrayList<GraphObject> path = calculations.getFinalPath();
-                    for (int i = 0; i < path.size(); i++) {
-                        System.out.println(path.get(i).getID());
-                    }
-                    System.out.println("------------------------------------");
+
+
+                    System.out.println(path.size());
                     for (int i = 1; i < path.size(); i++) {
                         Point3D target = path.get(i).getPointGPS();
                         if(!isIN(calculations.getTargetFruit().getPointGPS())) break;
@@ -261,15 +249,20 @@ public class Controller implements Observer {
                             board.updateGUI();
                             frame.updateTextLabel(play.getStatistics());
                             try {
-                                sleep(60);
+                                sleep(10);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
                 }
+                // Make some rotation to end the game, update Play
+                play.rotate(0);
+                game.update(play);
+                System.out.println(play.isRuning());
                 frame.updateTextLabel(play.getStatistics() + " | Game has ended");
             }
+
         }
 
         private boolean isIN(Point3D fruitPoint) {
@@ -286,10 +279,5 @@ public class Controller implements Observer {
             if(coords.distance3d(source, target) <= range) return true;
             return false;
         }
-
     }
-
-
-
-
 }

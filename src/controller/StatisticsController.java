@@ -26,7 +26,7 @@ public class StatisticsController {
      * @throws ClassNotFoundException if not mySql class have found
      * @throws SQLException if there was a problem with the connection
      */
-    public StatisticsController() throws ClassNotFoundException, SQLException {
+    StatisticsController() throws ClassNotFoundException, SQLException {
         initGUI();
         initSqlCredentials();
         initConnection();
@@ -41,7 +41,10 @@ public class StatisticsController {
     private void calculateAndPrintStatistics() throws SQLException {
         String query = "SELECT * FROM logs";
         ResultSet resultSet = statement.executeQuery(query);
-        final int MACHINE_PLAY_ID = 123;
+        final int MACHINE_PLAY_ID = 1234;
+        final int FIRST_ID = 308566611;
+        final int SECOND_ID = 312522329;
+
         int mapId;
 
         double humanSumScoreByMapID[] = new double[9];
@@ -57,19 +60,19 @@ public class StatisticsController {
         {
             mapId = getMapId(resultSet.getString("SomeDouble"));
 
-            // Validate this a valid Map Id
+            // Validate this a valid Map Id, of the new JAR
             if (mapId != -1) {
                 // Our Human Played scenario
-                if ((resultSet.getInt("FirstID") == 308566611 &&  resultSet.getInt("SecondID") == 312522329 && resultSet.getInt("ThirdID") == 0)
-                        || resultSet.getInt("FirstID") == 312522329 &&  resultSet.getInt("SecondID") == 308566611 && resultSet.getInt("ThirdID") == 0) {
+                if ((resultSet.getInt("FirstID") == FIRST_ID &&  resultSet.getInt("SecondID") == SECOND_ID && resultSet.getInt("ThirdID") == 0)
+                        || resultSet.getInt("FirstID") == SECOND_ID &&  resultSet.getInt("SecondID") == FIRST_ID && resultSet.getInt("ThirdID") == 0) {
 
                     humanSumScoreByMapID[mapId-1] += resultSet.getDouble("Point");
                     humanNumOfgamesByMapId[mapId-1]++;
 
 
                 // Our Machine Played scenario
-                } else if ((resultSet.getInt("FirstID") == 308566611 &&  resultSet.getInt("SecondID") == 312522329 && resultSet.getInt("ThirdID") == MACHINE_PLAY_ID)
-                        || resultSet.getInt("FirstID") == 312522329 &&  resultSet.getInt("SecondID") == 308566611 && resultSet.getInt("ThirdID") == MACHINE_PLAY_ID) {
+                } else if ((resultSet.getInt("FirstID") == FIRST_ID &&  resultSet.getInt("SecondID") ==  MACHINE_PLAY_ID)
+                        || resultSet.getInt("FirstID") == SECOND_ID &&  resultSet.getInt("SecondID") ==  MACHINE_PLAY_ID) {
 
                     machineSumScoreByMapID[mapId-1] += resultSet.getDouble("Point");
                     machineNumOfgamesByMapId[mapId-1]++;
@@ -79,6 +82,13 @@ public class StatisticsController {
                     studentsSumScoreByMapID[mapId-1] += resultSet.getDouble("Point");
                     studentsNumOfgamesByMapId[mapId-1]++;
                 }
+
+                if (resultSet.getInt("ThirdID") == MACHINE_PLAY_ID) {
+                    System.out.println("Found Third ID: " + MACHINE_PLAY_ID);
+
+                    System.out.println("The First ID Is: " + resultSet.getInt("FirstID"));
+                }
+
             }
 
         }
@@ -103,8 +113,8 @@ public class StatisticsController {
      */
     private void initSqlCredentials() {
         jdbcUrl = "jdbc:mysql://ariel-oop.xyz:3306/oop";
-        jdbcUser = "boaz";
-        jdbcPassword = "9125";
+        jdbcUser = "student";
+        jdbcPassword = "student";
     }
 
     /**
@@ -182,7 +192,8 @@ public class StatisticsController {
             if (machineNumOfGamesByMapId[i] != 0) machineScoreSumByMapId[i] = machineScoreSumByMapId[i] / machineNumOfGamesByMapId[i];
             if (studentsNumOfGamesByMapId[i] != 0) studentsScoreSumByMapId[i] = studentsScoreSumByMapId[i] / studentsNumOfGamesByMapId[i];
 
-            difference = humanScoreSumByMapId[i] - studentsScoreSumByMapId[i];
+            // Calculate the difference between our scores and another student scores
+            difference = (humanScoreSumByMapId[i] + machineScoreSumByMapId[i]) - studentsScoreSumByMapId[i];
 
             textArea.append(
                     (i+1) + "\t" +
