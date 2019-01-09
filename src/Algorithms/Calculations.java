@@ -274,6 +274,10 @@ public class Calculations {
     private void getMinPath() {
         int minIndex = 0;
         if(pathsDistance.isEmpty()) return;
+<<<<<<< HEAD
+=======
+        //  if(pathsDistance.size()==1) return;
+>>>>>>> Bugs_fix_and_statistics
         double min = pathsDistance.get(0);
 
         for (int i = 1; i < pathsDistance.size(); i ++) {

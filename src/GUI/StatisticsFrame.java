@@ -29,6 +29,7 @@ public class StatisticsFrame extends JFrame {
         JScrollPane pane = new JScrollPane(panel);
 
         textArea = new JTextArea();
+        textArea.setEditable(false);
         loading = new JLabel("Loading and calculating the statistics...");
 
         panel.add(textArea, BorderLayout.CENTER);
