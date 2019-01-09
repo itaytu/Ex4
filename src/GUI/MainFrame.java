@@ -25,7 +25,8 @@ public class MainFrame extends JFrame {
 
     private void loadImages() {
         try {
-            icon = ImageIO.read(new File("pacmanIcon.png"));
+            File icon1 = new File(getClass().getClassLoader().getResource("pacmanIcon.png").getFile());
+            icon = ImageIO.read(icon1);
         } catch (IOException e) {
             e.printStackTrace();
         }
