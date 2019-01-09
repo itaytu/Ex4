@@ -9,7 +9,7 @@ The game has a set timer for the game length, the player can gather points by ea
 there are no more fruits or when the timer is over. The player can also lose points if there is a collision with a block, or the game
 borders, or the ghosts. The points gathered by the player are shown on top of the game board.
 
-In the project we've implemented the use of the Observer design pattern, and the MVC design pattern.
+In the project we've implemented the use of the * *Observer* * design pattern, and the * *MVC* * design pattern.
 
 ## Project Hierarchy
 
@@ -22,7 +22,7 @@ In the project we've implemented the use of the Observer design pattern, and the
      - **Run Game:** clicking on the board and moving the player in the desired direction of the click. the player will move in the direction
        of the click until another click.
      - **Run Algorithm:** The player will move automatically to the closest fruit, while considering the blocks and the fruits that are left.
-  4. If the user didn't add a point an automatic mode of the Algorithm mode can be played, the player point will be set close to the first
+  4. If the user didn't add a point an automatic mode of the Algorithm mode can be played, the player point will be set close to the     first
      fruit in the game.
   5. After the game is done, the player can watch the statistics of the scores from all the games that were played.
   
@@ -46,7 +46,7 @@ In the project we've implemented the use of the Observer design pattern, and the
  
  ## Short explanation about the Algorithm
  Calculations - This class is the main part for the Auto run mode, The class calculates a path from the player to each fruit while
-                considering the blocks in the way. Each path is calculated with the use of the [dijkstra Algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
+                considering the blocks in the way. Each path is calculated with the use of the [dijkstra Algorithm]       (https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
                 for graphs and with the [BFS algorithm](https://en.wikipedia.org/wiki/Breadth-first_search). After all the paths were
                 calculated the Algorithm finds the shortest path and returns it as the path for the player movement.
  
