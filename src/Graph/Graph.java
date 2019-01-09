@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
+/**
+ * This class is from the Lecturer JAR: Graph_v0.11
+ */
 public class Graph
 {
     public static final double EPS = 1.0E-6D;

@@ -1,5 +1,8 @@
 package Graph;
 
+/**
+ * This class is from the Lecturer JAR: Graph_v0.11
+ */
 public class Edge
 {
     private int _index;

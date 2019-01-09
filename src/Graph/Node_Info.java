@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 import Geom.Point3D;
 
+/**
+ * This class is from the Lecturer JAR: Graph_v0.11
+ */
 public class Node_Info
 {
     public static final int WHITE = 0;
