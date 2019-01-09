@@ -2,6 +2,9 @@ package Elements;
 
 import Geom.Point3D;
 
+/**
+ * This class represents a simple Pacman Object holding the necessary information.
+ */
 public class Pacman {
 	
 	private int _ID;
@@ -13,8 +16,14 @@ public class Pacman {
 	private double _x, _y, _z;
 
 	private static int _IDGUI = 0;
-	
-	
+
+	/**
+	 * Constructor from a given CSV file.
+	 * @param data
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
 	public Pacman(String [] data, int x, int y, int z) {
 		_type = 'P';
 		_ID = Integer.parseInt(data[1]);
@@ -28,7 +37,12 @@ public class Pacman {
 		_speed = Double.parseDouble(data[5]);
 		_eatRadius = Double.parseDouble(data[6]);
 	}
-	
+
+	/**
+	 * GUI Constructor from clicks on a board.
+	 * @param x
+	 * @param y
+	 */
 	public Pacman(double x, double y) {
 		_ID = _IDGUI++;
 		_type = 'M';
@@ -38,7 +52,11 @@ public class Pacman {
 		_speed = (int) (Math.random()*(5)+1);
 		_eatRadius = (int) (Math.random()*(5)+1);
 	}
-	
+
+	/**
+	 * Copy Constructor.
+	 * @param p
+	 */
 	public Pacman(Pacman p) {
 		_ID = p._ID;
 		_type = p._type;

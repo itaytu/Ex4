@@ -3,6 +3,7 @@ package GUI;
 import Converters.Map;
 import Elements.*;
 import Geom.Point3D;
+import Utils.NextPoint;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -208,6 +209,7 @@ public class Board extends JPanel implements MouseListener {
 
             File player1 = new File(getClass().getClassLoader().getResource("pacman.png").getFile());
             player = ImageIO.read(player1);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

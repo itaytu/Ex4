@@ -7,12 +7,17 @@ import Geom.Point3D;
 import Robot.Play;
 import Utils.LineOfSight;
 
-import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a simple Junit test for the LineOfSight class.
+ * The purpose of this class is to test if the function that checks if there is a straight line
+ * between two points, considering all the obstacles in the way.
+ */
 class LineOfSightTest {
 
     private static String path;
@@ -26,12 +31,14 @@ class LineOfSightTest {
     private Point3D p1_2 = new Point3D(540, 153);
     private Point3D p2_3 = new Point3D(959, 105);
     private Point3D p3_1 = new Point3D(997, 435);
-    private Point3D p4_1 = new Point3D(552, 451);
-    private Point3D p5_0 = new Point3D(414, 286);
-    private Point3D p6_0 = new Point3D(1060, 281);
+    private Point3D p4_0 = new Point3D(414, 286);
 
 
-
+    /**
+     * This section sets up all the necessary objects needed for the calculation.
+     * Including a converter to convert from pixels to GPS coordinates and vice versa,
+     * Rectangles that represent the blocks.
+     */
     @BeforeAll
     static void setUp() {
         path = "C:\\Users\\Itayt\\IdeaProjects\\Ex4\\data\\Ex4_OOP_example5.csv";
@@ -47,16 +54,9 @@ class LineOfSightTest {
         }
     }
 
-/*    @Test
-    void checkRectangles() {
-        for (Rectangle2D rectangle : lineOfSight.getBlockRectangles()) {
-            System.out.println("RECTANGLE: ");
-            System.out.println("MinX: " + rectangle.getMinX() + " MaxX: " + rectangle.getMaxX());
-            System.out.println("MinY: " + rectangle.getMinY() + " MaxY: " + rectangle.getMaxY());
-            System.out.println("------------------------------------------------------");
-        }
-    }*/
-
+    /**
+     * This test checks a line of sight from player 1 to all the fruits on the map.
+     */
     @Test
     void checkIntersectionforp1() {
         System.out.println("Only 2 expected");
@@ -71,6 +71,9 @@ class LineOfSightTest {
         System.out.println("\n----------------------------------\n");
     }
 
+    /**
+     * This test checks a line of sight from player 2 to all the fruits on the map.
+     */
     @Test
     void checkIntersectionforp2() {
         System.out.println("Only 3 expected");
@@ -85,6 +88,9 @@ class LineOfSightTest {
         System.out.println("\n----------------------------------\n");
     }
 
+    /**
+     * This test checks a line of sight from player 3 to all the fruits on the map.
+     */
     @Test
     void checkIntersectionforp3() {
         System.out.println("Only 1 expected");
@@ -99,13 +105,16 @@ class LineOfSightTest {
         System.out.println("\n----------------------------------\n");
     }
 
+    /**
+     * This test checks a line of sight from player 4 to all the fruits on the map.
+     */
     @Test
     void checkIntersectionforp4() {
-        System.out.println("Only 1 expected");
+        System.out.println("Zero expected");
         int actual = 0;
-        int expected = 1;
+        int expected = 0;
         for (Point3D p : fruitPixels) {
-            boolean flag = lineOfSight.checkIntersection(p4_1, p);
+            boolean flag = lineOfSight.checkIntersection(p4_0, p);
             if(!flag) actual++;
         }
         assertEquals(expected, actual, "Function is wrong");
@@ -113,31 +122,4 @@ class LineOfSightTest {
         System.out.println("\n----------------------------------\n");
     }
 
-    @Test
-    void checkIntersectionforp5() {
-        System.out.println("Zero expected");
-        int actual = 0;
-        int expected = 0;
-        for (Point3D p : fruitPixels) {
-            boolean flag = lineOfSight.checkIntersection(p5_0, p);
-            if(!flag) actual++;
-        }
-        assertEquals(expected, actual, "Function is wrong");
-        if(expected==actual) System.out.println("True");
-        System.out.println("\n----------------------------------\n");
-    }
-
-    @Test
-    void checkIntersectionforp6() {
-        System.out.println("Zero expected");
-        int actual = 0;
-        int expected = 0;
-        for (Point3D p : fruitPixels) {
-            boolean flag = lineOfSight.checkIntersection(p6_0, p);
-            if(!flag) actual++;
-        }
-        assertEquals(expected, actual, "Function is wrong");
-        if(expected==actual) System.out.println("True");
-        System.out.println("\n----------------------------------\n");
-    }
 }

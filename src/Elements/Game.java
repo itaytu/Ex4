@@ -5,6 +5,11 @@ import Robot.Play;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the game holding all the information about the objects in the game.
+ *
+ * Such objects are: Player, Fruits, Other Pacmans, Ghosts, Blocks.
+ */
 public class Game {
 
     private ArrayList<Ghost> ghostArrayList;
@@ -13,19 +18,19 @@ public class Game {
     private ArrayList<Block> blockArrayList;
     private Pacman player;
 
+
+    /**
+     * Constructor for a game from a play.
+     * @param play
+     */
     public Game(Play play) {
         this.player = new Pacman(-1,-1);
         init(play);
     }
 
-    public Game(Game g) {
-        pacmanArrayList = new ArrayList<>(g.getPacmanArrayList());
-        fruitArrayList = new ArrayList<>(g.getFruitArrayList());
-        ghostArrayList = new ArrayList<>(g.getGhostArrayList());
-        blockArrayList = new ArrayList<>(g.getBlockArrayList());
-        player = new Pacman(g.getPlayer());
-    }
-
+    /**
+     * Empty Constructor.
+     */
     public Game() {
         pacmanArrayList = new ArrayList<>();
         fruitArrayList = new ArrayList<>();
@@ -33,6 +38,12 @@ public class Game {
         blockArrayList = new ArrayList<>();
     }
 
+
+    /**
+     * Reading the information from the play and sorting it by the different objects.
+     *
+     * @param play
+     */
     private void init(Play play) {
         ghostArrayList = new ArrayList<>();
         pacmanArrayList = new ArrayList<>();
@@ -72,35 +83,66 @@ public class Game {
             }
         }
     }
-
+    /**
+     * Simple get method to get the Pacmans.
+     * @return
+     */
     public ArrayList<Pacman> getPacmanArrayList() {
         return pacmanArrayList;
     }
 
+    /**
+     * Simple get method to get the Fruits.
+     * @return
+     */
     public ArrayList<Fruit> getFruitArrayList() {
         return fruitArrayList;
     }
 
+    /**
+     * Simple get method to get the Ghosts.
+     * @return
+     */
     public ArrayList<Ghost> getGhostArrayList() {
         return ghostArrayList;
     }
 
+    /**
+     * Simple get method to get the Blocks.
+     * @return
+     */
     public ArrayList<Block> getBlockArrayList() {
         return blockArrayList;
     }
 
+    /**
+     * Add a player to the game.
+     * @param p
+     */
     public void addPlayer(Pacman p) {
         player = new Pacman(p);
     }
 
+    /**
+     * Simple get method to get the Player.
+     * @return
+     */
     public Pacman getPlayer () {
         return player;
     }
 
+    /**
+     * Simple set method for the Player.
+     * @param p
+     */
     public void setPlayer(Point3D p) {
         this.player = new Pacman(p.get_x(), p.get_y());
     }
 
+    /**
+     * Updating the game.
+     * @param play
+     */
     public void update(Play play) {
         pacmanArrayList.clear();
         fruitArrayList.clear();
