@@ -12,10 +12,13 @@ public class MainFrame extends JFrame {
 
     private Board board;
     private BufferedImage icon;
-    private MenuItem runGame, runStepByStep, loadGame, saveGame, addPlayer, removePlayer, runAlgo;
-   // private Menu runAlgo;
+    private MenuItem runGame, runStepByStep, loadGame, showStats, addPlayer, removePlayer, runAlgo;
     private JLabel textLabel;
 
+    /**
+     * The main View for the game. It hosts the board panel, where all the paint work done.
+     * @param board
+     */
     public MainFrame(Board board) {
         this.board = board;
 
@@ -23,6 +26,9 @@ public class MainFrame extends JFrame {
         initGUI();
     }
 
+    /**
+     * Load pacman image icon.
+     */
     private void loadImages() {
         try {
             File icon1 = new File(getClass().getClassLoader().getResource("pacmanIcon.png").getFile());
@@ -32,8 +38,10 @@ public class MainFrame extends JFrame {
         }
     }
 
+    /**
+     * Init menu items of the frame. Setting the properties of the frame.
+     */
     private void initGUI() {
-        //setContentPane(board);
         setLayout(new BorderLayout());
 
         JPanel boardPanel = board;
@@ -71,6 +79,9 @@ public class MainFrame extends JFrame {
         Menu run = new Menu("Run");
         menuBar.add(run);
 
+        Menu stats = new Menu("Statistics");
+        menuBar.add(stats);
+
         runGame = new MenuItem("Run Game");
         run.add(runGame);
         runGame.setEnabled(false);
@@ -86,15 +97,14 @@ public class MainFrame extends JFrame {
         loadGame = new MenuItem("Load Game");
         file.add(loadGame);
 
-        saveGame = new MenuItem("Save Game");
-        file.add(saveGame);
-
         addPlayer = new MenuItem("Add Player");
         game.add(addPlayer);
 
         removePlayer = new MenuItem("Remove Player");
         game.add(removePlayer);
 
+        showStats = new MenuItem("Show Statistics");
+        stats.add(showStats);
     }
 
     public MenuItem getRunGame() {
@@ -109,10 +119,6 @@ public class MainFrame extends JFrame {
         return loadGame;
     }
 
-    public MenuItem getSaveGame() {
-        return saveGame;
-    }
-
     public MenuItem getAddPlayer() {
         return addPlayer;
     }
@@ -123,10 +129,12 @@ public class MainFrame extends JFrame {
 
     public MenuItem getRunAlgo() { return runAlgo; }
 
-    public JLabel getTextLabel() {
-        return textLabel;
-    }
+    public MenuItem getShowStats() { return showStats; }
 
+    /**
+     * Updates the text label on the status bar.
+     * @param msg
+     */
     public void updateTextLabel(String msg) {
         textLabel.setText("");
         textLabel.setText(msg);

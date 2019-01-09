@@ -88,8 +88,7 @@ public class pixelsCoordsConverter {
 			y = maxPixelY - eps;
 		}
 
-		int[] arr = { (int) x, (int) y };
-		return arr;
+		return new int[]{ (int) x, (int) y };
 	}
 
 }

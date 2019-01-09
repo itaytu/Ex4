@@ -13,10 +13,12 @@ import Utils.NextPoint;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+<<<<<<< HEAD
 /**
  * This class represents the Controller of the project, this class is in charge of the communication
  * between the UI and the logical classes. The class uses the Observer design pattern in order to create
@@ -27,6 +29,9 @@ import java.util.Observer;
  *
  * @author Itay Tuson and Sagi Oshri.
  */
+=======
+
+>>>>>>> Bugs_fix_and_statistics
 public class Controller implements Observer {
 
     private MyCoords coords = new MyCoords();
@@ -36,7 +41,8 @@ public class Controller implements Observer {
     private Play play;
     private Calculations calculations;
     private MainFrame frame;
-    private boolean firstTimeRun = true, serverInitiated = false;
+    private boolean serverInitiated = false;
+    private final int MACHINE_PLAY_ID = 1234;
 
     private Point3D nextStepPoint;
     private double azimuth;
@@ -66,10 +72,6 @@ public class Controller implements Observer {
             frame.getAddPlayer().setEnabled(true);
         });
 
-        frame.getSaveGame().addActionListener(e -> {
-            saveGame();
-        });
-
         frame.getRunGame().addActionListener(e -> {
             runGame();
         });
@@ -95,6 +97,14 @@ public class Controller implements Observer {
             frame.getAddPlayer().setEnabled(true);
         });
 
+        frame.getShowStats().addActionListener(e -> {
+            try {
+                new StatisticsController();
+            } catch (ClassNotFoundException | SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
+
         // Observe the NextPoint object from the board
         observe(board.getNextPoint());
     }
@@ -104,7 +114,9 @@ public class Controller implements Observer {
      * @param isAlgo
      */
     private void initServer(boolean isAlgo) {
-        if (isAlgo) play.setIDs(308566611, 312522329, 123);
+        if (isAlgo) {
+            play.setIDs(308566611, MACHINE_PLAY_ID);
+        }
         else play.setIDs(308566611, 312522329);
         game.getPlayer().setPoint(nextStepPoint);
         play.setInitLocation(game.getPlayer().getPoint().get_y(), game.getPlayer().getPoint().get_x());
@@ -136,11 +148,7 @@ public class Controller implements Observer {
      */
     private void runGame() {
         board.setRunAutoGame(true);
-    }
-
-    // TODO: Fix, need to send the game data.
-    private void saveGame() {
-
+        if(!serverInitiated) initServer(false);
     }
 
     /**
@@ -163,17 +171,16 @@ public class Controller implements Observer {
      */
     private void runStepByStep() {
         board.setStepByStep(true);
+        if(!serverInitiated) initServer(false);
     }
 
     /**
      * When in autoRun mode, moves the player in the desired direction and updates the game.
      */
     private void runNextStep() {
-        if(!serverInitiated) initServer(false);
-
         play.rotate(azimuth);
         game.update(play);
-
+        frame.updateTextLabel(play.getStatistics());
         board.updateGUI();
     }
 
@@ -183,18 +190,17 @@ public class Controller implements Observer {
     private void runAlgo() {
         if(!serverInitiated) initServer(true);
         board.setRunAlgo(true);
+<<<<<<< HEAD
 
+=======
+>>>>>>> Bugs_fix_and_statistics
         startThread();
-
-        // board.setRunAlgo(true);
     }
 
     /**
      * Starting the thread for the game.
      */
     private void startThread() {
-        //if(!serverInitiated) initServer();
-
         Thread movement = new PlayerMovement();
         movement.start();
     }
@@ -211,11 +217,7 @@ public class Controller implements Observer {
         nextStepPoint = nextPoint.getPoint();
         azimuth = nextPoint.getAzimuth();
 
-        if (firstTimeRun) {
-            initServer(false);
-            firstTimeRun = false;
-        }
-
+        // Adding player click
         if (board.isAddPlayer()) {
             Pacman newPlayer = new Pacman(nextStepPoint.get_x(), nextStepPoint.get_y());
             game.addPlayer(newPlayer);
@@ -224,17 +226,17 @@ public class Controller implements Observer {
             board.updateGUI();
         }
 
-        // Step by step mode
+        // Step by step mode click
         else if (board.isRunStepByStep()) {
             runNextStep();
         }
 
-        // Auto game mode
+        // Auto game mode click
         else if (board.isRunAutoGame()) {
-            //if (board.isFirstClick()) {
+            if (board.isFirstClick()) {
                 board.setFirstClick(false);
                 startThread();
-           // }
+            }
         }
     }
 
@@ -287,7 +289,10 @@ public class Controller implements Observer {
 
             //Auto run mode
             if (board.isRunAutoGame()) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> Bugs_fix_and_statistics
                 while (play.isRuning()) {
                     play.rotate(azimuth);
                     game.update(play);
@@ -305,17 +310,25 @@ public class Controller implements Observer {
                 frame.getRunGame().setEnabled(true);
                 frame.getRunStepByStep().setEnabled(true);
                 frame.getRunAlgo().setEnabled(true);
-
-                board.clearGame();
-                board.clearPlayer();
+                board.setLoaded(false);
             }
 
             //Algorithm run mode
             else if (board.isRunAlgo()) {
+<<<<<<< HEAD
                 while ((play.isRuning()) && (!game.getFruitArrayList().isEmpty())) {
                     calculations = new Calculations(game, board.getWidth(), board.getHeight());
                     calculations.INIT();
                     ArrayList<GraphObject> path = calculations.getFinalPath();
+=======
+                while ((play.isRuning() && !game.getFruitArrayList().isEmpty())) {
+                    calculations = new Calculations(game, board.getWidth(), board.getHeight());
+                    calculations.INIT();
+                    ArrayList<GraphObject> path = calculations.getFinalPath();
+
+
+                    System.out.println(path.size());
+>>>>>>> Bugs_fix_and_statistics
                     for (int i = 1; i < path.size(); i++) {
                         Point3D target = path.get(i).getPointGPS();
                         if(!isIN(calculations.getTargetFruit().getPointGPS())) break;
@@ -334,8 +347,13 @@ public class Controller implements Observer {
                         }
                     }
                 }
+                // Make some rotation to end the game, update Play
+                play.rotate(0);
+                game.update(play);
+                System.out.println(play.isRuning());
                 frame.updateTextLabel(play.getStatistics() + " | Game has ended");
             }
+
         }
 
         /**
@@ -364,5 +382,8 @@ public class Controller implements Observer {
             return false;
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> Bugs_fix_and_statistics
 }
