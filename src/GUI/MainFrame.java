@@ -12,7 +12,7 @@ public class MainFrame extends JFrame {
 
     private Board board;
     private BufferedImage icon;
-    private MenuItem runGame, runStepByStep, loadGame, showStats, addPlayer, removePlayer, runAlgo;
+    private MenuItem runGame, runStepByStep, loadGame, showStats, addPlayer, removePlayer, runAlgoWith, runAlgoWithout;
     private JLabel textLabel;
 
     /**
@@ -79,6 +79,9 @@ public class MainFrame extends JFrame {
         Menu run = new Menu("Run");
         menuBar.add(run);
 
+        Menu algorithm = new Menu("Algorithm");
+        menuBar.add(algorithm);
+
         Menu stats = new Menu("Statistics");
         menuBar.add(stats);
 
@@ -90,9 +93,12 @@ public class MainFrame extends JFrame {
         run.add(runStepByStep);
         runStepByStep.setEnabled(false);
 
-        runAlgo = new MenuItem("Run Algorithm");
-        run.add(runAlgo);
-        runAlgo.setEnabled(false);
+        runAlgoWith = new MenuItem("With Player");
+        algorithm.add(runAlgoWith);
+        runAlgoWith.setEnabled(false);
+
+        runAlgoWithout = new MenuItem("Without Player");
+        algorithm.add(runAlgoWithout);
 
         loadGame = new MenuItem("Load Game");
         file.add(loadGame);
@@ -127,7 +133,9 @@ public class MainFrame extends JFrame {
         return removePlayer;
     }
 
-    public MenuItem getRunAlgo() { return runAlgo; }
+    public MenuItem getRunAlgo() { return runAlgoWith; }
+
+    public MenuItem getRunAlgoWithout() { return runAlgoWithout; }
 
     public MenuItem getShowStats() { return showStats; }
 

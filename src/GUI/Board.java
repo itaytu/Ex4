@@ -24,7 +24,8 @@ public class Board extends JPanel implements MouseListener {
     private Map mapProperties;
     private NextPoint nextPoint;
 
-    private boolean addPlayer, stepByStep, runAutoGame, loaded, firstClick = true, runAlgo = false;
+    private boolean addPlayer, stepByStep, runAutoGame, loaded, firstClick = true, runAlgo = false,
+    runAlgoWithout = false;
 
     /** Constructs new Board.
      */
@@ -181,6 +182,8 @@ public class Board extends JPanel implements MouseListener {
         runAutoGame = flag;
     }
 
+    public void setRunAlgoWithout(boolean flag) { runAlgoWithout = flag; }
+
     public NextPoint getNextPoint() {
         return nextPoint;
     }
@@ -233,6 +236,8 @@ public class Board extends JPanel implements MouseListener {
     }
 
     public boolean isRunAlgo() { return runAlgo; }
+
+    public boolean isRunAlgoWithout() { return runAlgoWithout; }
 
     public void showMessagePrompt(String msg) {
         JOptionPane.showMessageDialog(null, "Game ended.\n" + msg);
