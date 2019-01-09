@@ -24,7 +24,8 @@ public class Board extends JPanel implements MouseListener {
     private Map mapProperties;
     private NextPoint nextPoint;
 
-    private boolean addPlayer, stepByStep, runAutoGame, loaded, firstClick = true, runAlgo = false;
+    private boolean addPlayer, stepByStep, runAutoGame, loaded, firstClick = true, runAlgo = false,
+    runAlgoWithout = false;
 
     /** Constructs new Board.
      */
@@ -211,6 +212,8 @@ public class Board extends JPanel implements MouseListener {
         runAutoGame = flag;
     }
 
+    public void setRunAlgoWithout(boolean flag) { runAlgoWithout = flag; }
+  
     /**
      * Gets the observable object, that updates on every mouse click, Implies the next point the pacman should go
      * @return Observable NextPoint
@@ -297,6 +300,8 @@ public class Board extends JPanel implements MouseListener {
      * @return if this is the current mode
      */
     public boolean isRunAlgo() { return runAlgo; }
+
+    public boolean isRunAlgoWithout() { return runAlgoWithout; }
 
     public void showMessagePrompt(String msg) {
         JOptionPane.showMessageDialog(null, "Game ended.\n" + msg);

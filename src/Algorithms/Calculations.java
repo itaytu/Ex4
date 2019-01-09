@@ -120,32 +120,32 @@ public class Calculations {
     private void createBlockObjects() {
         for (Block b : game.getBlockArrayList()) {
             int [] LeftTop = converter.gps2Pixels(b.getMaxLeft());
-            LeftTop[0] = LeftTop[0]-2;
-            LeftTop[1] = LeftTop[1]-2;
+            LeftTop[0] = LeftTop[0]-3;
+            LeftTop[1] = LeftTop[1]-3;
             Point3D leftTopPixels = new Point3D(LeftTop[0], LeftTop[1]);
             Point3D leftTopGPS = converter.toCoords(LeftTop[0], LeftTop[1]);
             GraphObject leftTopObject = new GraphObject(leftTopPixels, leftTopGPS);
             blocksArrayList.add(leftTopObject);
 
             int [] RightTop = converter.gps2Pixels(b.getMaxRight());
-            RightTop[0] = RightTop[0]+2;
-            RightTop[1] = RightTop[1]-2;
+            RightTop[0] = RightTop[0]+3;
+            RightTop[1] = RightTop[1]-3;
             Point3D rightTopPixels = new Point3D(RightTop[0], RightTop[1]);
             Point3D rightTopGPS = converter.toCoords(RightTop[0], RightTop[1]);
             GraphObject rightTopObject = new GraphObject(rightTopPixels, rightTopGPS);
             blocksArrayList.add(rightTopObject);
 
             int [] RightBottom = converter.gps2Pixels(b.getMinRight());
-            RightBottom[0] = RightBottom[0]+2;
-            RightBottom[1] = RightBottom[1]+2;
+            RightBottom[0] = RightBottom[0]+3;
+            RightBottom[1] = RightBottom[1]+3;
             Point3D rightBotPixels = new Point3D(RightBottom[0], RightBottom[1]);
             Point3D rightBotGPS = converter.toCoords(RightBottom[0], RightBottom[1]);
             GraphObject rightBotObject = new GraphObject(rightBotPixels, rightBotGPS);
             blocksArrayList.add(rightBotObject);
 
             int [] LeftBottom = converter.gps2Pixels(b.getMinLeft());
-            LeftBottom[0] = LeftBottom[0]-2;
-            LeftBottom[1] = LeftBottom[1]+2;
+            LeftBottom[0] = LeftBottom[0]-3;
+            LeftBottom[1] = LeftBottom[1]+3;
             Point3D leftBotPixels = new Point3D(LeftBottom[0], LeftBottom[1]);
             Point3D leftBotGPS = converter.toCoords(LeftBottom[0], LeftBottom[1]);
             GraphObject leftBotObject = new GraphObject(leftBotPixels, leftBotGPS);

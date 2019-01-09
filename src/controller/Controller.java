@@ -81,6 +81,9 @@ public class Controller implements Observer {
             runAlgo();
         });
 
+        frame.getRunAlgoWithout().addActionListener(e ->{
+            runAlgoWithout();
+        });
         frame.getAddPlayer().addActionListener(e -> {
             addPlayer();
             frame.getAddPlayer().setEnabled(false);
@@ -187,6 +190,19 @@ public class Controller implements Observer {
     private void runAlgo() {
         if(!serverInitiated) initServer(true);
         board.setRunAlgo(true);
+
+        startThread();
+    }
+
+    private void runAlgoWithout() {
+        nextStepPoint = new Point3D(game.getFruitArrayList().get(0).getPoint().get_x()-0.00001,game.getFruitArrayList().get(0).getPoint().get_y()-0.00001);
+        Pacman newPlayer = new Pacman(nextStepPoint.get_x(), nextStepPoint.get_y());
+        game.addPlayer(newPlayer);
+        System.out.println("In run Algo WIthout");
+        System.out.println("PLAYER POINT: " + game.getPlayer().getPoint().get_x() + ", " + game.getPlayer().getPoint().get_y());
+
+        if(!serverInitiated) initServer(true);
+        board.setRunAlgoWithout(true);
 
         startThread();
     }
@@ -305,7 +321,7 @@ public class Controller implements Observer {
             }
 
             //Algorithm run mode
-            else if (board.isRunAlgo()) {
+            else if (board.isRunAlgo() || board.isRunAlgoWithout()) {
 
                 while ((play.isRuning() && !game.getFruitArrayList().isEmpty())) {
                     calculations = new Calculations(game, board.getWidth(), board.getHeight());
@@ -322,7 +338,7 @@ public class Controller implements Observer {
                             board.updateGUI();
                             frame.updateTextLabel(play.getStatistics());
                             try {
-                                sleep(10);
+                                sleep(40);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -330,8 +346,9 @@ public class Controller implements Observer {
                     }
                 }
                 // Make some rotation to end the game, update Play
-              //  play.rotate(0);
+                play.rotate(0);
                 game.update(play);
+                board.updateGUI();
                 System.out.println(play.isRuning());
                 frame.updateTextLabel(play.getStatistics() + " | Game has ended");
             }
