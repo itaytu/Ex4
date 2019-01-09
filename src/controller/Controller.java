@@ -327,7 +327,7 @@ public class Controller implements Observer {
                             board.updateGUI();
                             frame.updateTextLabel(play.getStatistics());
                             try {
-                                sleep(60);
+                                sleep(10);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
