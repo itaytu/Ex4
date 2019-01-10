@@ -195,7 +195,8 @@ public class Controller implements Observer {
     }
 
     private void runAlgoWithout() {
-        nextStepPoint = new Point3D(game.getFruitArrayList().get(0).getPoint().get_x()-0.00001,game.getFruitArrayList().get(0).getPoint().get_y()-0.00001);
+        int randomFruit = (int)(Math.random()*game.getFruitArrayList().size());
+        nextStepPoint = new Point3D(game.getFruitArrayList().get(randomFruit).getPoint().get_x()-0.00001,game.getFruitArrayList().get(0).getPoint().get_y()-0.00001);
         Pacman newPlayer = new Pacman(nextStepPoint.get_x(), nextStepPoint.get_y());
         game.addPlayer(newPlayer);
         System.out.println("In run Algo WIthout");
