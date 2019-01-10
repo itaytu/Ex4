@@ -59,9 +59,9 @@ public class Calculations {
      * parameters needed.
      * Some of the parameters are: LineOfSight, creating the block Objects and the Converter.
      *
-     * @param game
-     * @param width
-     * @param height
+     * @param game - game object
+     * @param width - board width
+     * @param height - board height
      */
     public Calculations(Game game, int width, int height) {
 
@@ -166,7 +166,7 @@ public class Calculations {
 
     /**
      * This function creates a GraphObject for a given fruit.
-     * @param f
+     * @param f - GraphObject
      */
     private  void createFruitObject(Fruit f) {
         int [] fruitPoint = converter.gps2Pixels(f.getPoint());
@@ -179,7 +179,7 @@ public class Calculations {
 
     /**
      * This function creates an ArrayList of GraphObjects containing the player, block edges and a given fruit.
-     * @param fruitObject
+     * @param fruitObject - Graph Object
      */
     private void createPath(GraphObject fruitObject) {
         path = new ArrayList<>();
@@ -193,7 +193,7 @@ public class Calculations {
     /**
      * This function takes the GraphObject of the player and edges and calculates each objects neighbors.
      * The calculation is made by using the BFS algorithm.
-     * @param graphObjectArrayList
+     * @param graphObjectArrayList -  graphObjectArrayList
      */
     private void addNeighbors(ArrayList<GraphObject> graphObjectArrayList) {
         Queue<GraphObject> BFS = new LinkedList<>();
@@ -227,8 +227,8 @@ public class Calculations {
      * The Graph is created by creating nodes to each Object that has neighbors and then creating edges
      * between the nodes that have a straight path between them.
      *
-     * @param graphObjectArrayList
-     * @return
+     * @param graphObjectArrayList - graphObjectArrayList
+     * @return Graph graph
      */
     private Graph createGraph(ArrayList<GraphObject> graphObjectArrayList) {
         graph = new Graph();
@@ -256,7 +256,7 @@ public class Calculations {
     /**
      * This function calculates the path in a given graph from player to fruit, with consideration to the blocks.
      * This method is used by using the dijkstra Graph Algorithm.
-     * @param g
+     * @param g graph
      */
     private void createPath(Graph g) {
         shortestPath = new ArrayList<>();
@@ -288,9 +288,9 @@ public class Calculations {
 
     /**
      * This function creates the final path.
-     * @param graphObjects
-     * @param shortestPath
-     * @param index
+     * @param graphObjects - graph Object
+     * @param shortestPath - ArrayList containing the path
+     * @param index - index for the minimal fruit
      */
     private void createFinalPath(ArrayList<GraphObject> graphObjects, ArrayList<String> shortestPath, int index) {
         finalPath = new ArrayList<>();
@@ -308,7 +308,7 @@ public class Calculations {
 
     /**
      * This function clears the neighbors of each GraphObject after every iteration.
-     * @param graphObjects
+     * @param graphObjects - graph object
      */
     private void clearNeighbors(ArrayList<GraphObject> graphObjects) {
         for(GraphObject graphObject : graphObjects) {

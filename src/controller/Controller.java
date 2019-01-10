@@ -111,7 +111,7 @@ public class Controller implements Observer {
 
     /**
      * Server initiation for running the game.
-     * @param isAlgo
+     * @param isAlgo - boolean flag to check if run algorithm was clicked
      */
     private void initServer(boolean isAlgo) {
         if (isAlgo) {
@@ -218,8 +218,8 @@ public class Controller implements Observer {
 
     /**
      * This function is in charge of checking and making updates when needed, by observing the board.
-     * @param o
-     * @param arg
+     * @param o observable
+     * @param arg object observed
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -257,7 +257,7 @@ public class Controller implements Observer {
 
     /**
      * Chosing a game file.
-     * @return
+     * @return String for file path
      */
     private String chooseFilePath() {
 
@@ -358,8 +358,8 @@ public class Controller implements Observer {
 
         /**
          * This function checks if the fruit target is still on board and hasn't been eaten by others.
-         * @param fruitPoint
-         * @return
+         * @param fruitPoint fruit GPS point
+         * @return true or false
          */
         private boolean isIN(Point3D fruitPoint) {
             for(Fruit f : game.getFruitArrayList()) {
@@ -372,9 +372,9 @@ public class Controller implements Observer {
 
         /**
          * This function checks if the player is close enough to the target.
-         * @param source
-         * @param target
-         * @return
+         * @param source Point from
+         * @param target Point to
+         * @return true or false if in range
          */
         private boolean closeDistance(Point3D source, Point3D target) {
             double range= 1;

@@ -13,19 +13,37 @@ import Geom.Point3D;
 
 //30.00.01
 public interface coords_converter {
-	/** computes a new point which is the gps point transformed by a 3D vector (in meters)*/
+	/** computes a new point which is the gps point transformed by a 3D vector (in meters)
+	 * @param gps point in gps
+	 * @param local_vector_in_meter point in vector
+     *
+     * @return point added
+	 */
 	public Point3D add(Point3D gps, Point3D local_vector_in_meter);
-	/** computes the 3D distance (in meters) between the two gps like points */
+	/** computes the 3D distance (in meters) between the two gps like points
+	 * @param gps0 point1 in gps
+	 * @param gps1 point2 in gps
+     *
+     * @return distance
+	 */
 	public double distance3d(Point3D gps0, Point3D gps1);
-	/** computes the 3D vector (in meters) between two gps like points */
+	/** computes the 3D vector (in meters) between two gps like points
+	 * @param gps0 point1 in gps
+	 * @param gps1 point2 in gps
+	 *
+	 */
 	public Point3D vector3D(Point3D gps0, Point3D gps1);
 	/** computes the polar representation of the 3D vector be gps0-->gps1 
-	 * Note: this method should return an azimuth (aka yaw), elevation (pitch), and distance*/
+	 * Note: this method should return an azimuth (aka yaw), elevation (pitch), and distance
+	 * @param gps0 point1 in gps
+	 * @param gps1 point2 in gps
+     * @return azimuth
+	 */
 	public double[] azimuth_elevation_dist(Point3D gps0, Point3D gps1);
 	/**
 	 * return true iff this point is a valid lat, lon , lat coordinate: [-180,+180],[-90,+90],[-450, +inf]
-	 * @param p
-	 * @return
+	 * @param p point GPS
+	 * @return true or false if valid
 	 */
 	public boolean isValid_GPS_Point(Point3D p);
 	

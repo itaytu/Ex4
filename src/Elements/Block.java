@@ -19,7 +19,7 @@ public class Block {
 
 	/**
 	 * Constructor from a given CSV file.
-	 * @param data
+	 * @param data string data
 	 */
 	public Block(String[] data) {
 		type = 'B';
@@ -53,7 +53,7 @@ public class Block {
 
 	/**
 	 * Get Top Left corner.
-	 * @return
+	 * @return max left point
 	 */
 	public Point3D getMaxLeft() {
 		return MaxLeft;
@@ -61,7 +61,7 @@ public class Block {
 
 	/**
 	 * Get Top Right corner.
-	 * @return
+	 * @return max right point
 	 */
 	public Point3D getMaxRight() {
 		return MaxRight;
@@ -69,7 +69,7 @@ public class Block {
 
 	/**
 	 * Get Bottom Right corner.
-	 * @return
+	 * @return min right point
 	 */
 	public Point3D getMinRight() {
 		return MinRight;
@@ -77,7 +77,7 @@ public class Block {
 
 	/**
 	 * Get Bottom Left corner.
-	 * @return
+	 * @return min left point
 	 */
 	public Point3D getMinLeft() {
 		return MinLeft;

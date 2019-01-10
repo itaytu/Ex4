@@ -19,10 +19,10 @@ public class Pacman {
 
 	/**
 	 * Constructor from a given CSV file.
-	 * @param data
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param data string data
+	 * @param x index for x
+	 * @param y index for y
+	 * @param z index for z
 	 */
 	public Pacman(String [] data, int x, int y, int z) {
 		_type = 'P';
@@ -40,8 +40,8 @@ public class Pacman {
 
 	/**
 	 * GUI Constructor from clicks on a board.
-	 * @param x
-	 * @param y
+	 * @param x pixels x
+	 * @param y pixels y
 	 */
 	public Pacman(double x, double y) {
 		_ID = _IDGUI++;
@@ -55,7 +55,7 @@ public class Pacman {
 
 	/**
 	 * Copy Constructor.
-	 * @param p
+	 * @param p pacman
 	 */
 	public Pacman(Pacman p) {
 		_ID = p._ID;

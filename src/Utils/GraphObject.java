@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /**
  * This class represents the Graph Object needed in order to calculate the Algorithm.
- * The Graph Object is a generic object containing an ID, Point3D in GPS & Pixels, Neighbors, and a boolean
+ * The Graph Object is a generic object containing an ID, Point3D in GPS and Pixels, Neighbors, and a boolean
  * flag to check if the object has finished calculations in the BFS algorithm.
  */
 public class GraphObject {
@@ -18,9 +18,9 @@ public class GraphObject {
     private boolean isDone;
 
     /**
-     * The constructor initiates the object Point3D in GPS & Pixels, the ID and the neighbors ArrayList.
-     * @param pointPixels
-     * @param pointGPS
+     * The constructor initiates the object Point3D in GPS and Pixels, the ID and the neighbors ArrayList.
+     * @param pointPixels point in pixels
+     * @param pointGPS point in gps
      */
     public GraphObject(Point3D pointPixels, Point3D pointGPS) {
         this.pointPixels = pointPixels;
@@ -43,7 +43,7 @@ public class GraphObject {
 
     /**
      * Simple get Method to return the Point3D in pixels and GPS.
-     * @return pixel & GPS point
+     * @return pixel and GPS point
      */
     public Point3D getPointPixels() {
         return pointPixels;
@@ -52,8 +52,8 @@ public class GraphObject {
     public Point3D getPointGPS() { return pointGPS; }
 
     /**
-     * Simple set & get Method for the objects ID.
-     * @return
+     * Simple set and get Method for the objects ID.
+     * @return id
      */
     public int getID() {
         return ID;
@@ -64,8 +64,8 @@ public class GraphObject {
     }
 
     /**
-     * Simple set & get method to check if the object is done calculating.
-     * @return
+     * Simple set and get method to check if the object is done calculating.
+     * @return isDone
      */
     public boolean isDone() {
         return isDone;

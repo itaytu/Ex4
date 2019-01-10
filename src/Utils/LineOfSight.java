@@ -23,9 +23,9 @@ public class LineOfSight {
      * This constructor gets all the blocks, a source point and a target.
      * It creates a line between the 2 given points and check if they intersect with the blocks.
      *
-     * @param blocks
-     * @param width
-     * @param height
+     * @param blocks arraylist of blocks
+     * @param width board width
+     * @param height board height
      */
     public LineOfSight(ArrayList<Block> blocks , int width, int height) {
         this.blockArrayList = blocks;
@@ -58,6 +58,9 @@ public class LineOfSight {
 
     /**
      * This function checks if a line intersects with one of the rectangles.
+     *
+     * @param source source point
+     * @param target target point
      * @return true or false
      */
     public boolean checkIntersection(Point3D source, Point3D target) {

@@ -106,7 +106,7 @@ public class Board extends JPanel implements MouseListener {
     /**
      * Handles mouse clicks.
      * When the click is targeted to a game mode, like Auto Game or
-     * @param e
+     * @param e mouse event
      */
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -170,13 +170,13 @@ public class Board extends JPanel implements MouseListener {
 
     /**
      * Set the game to a run algorythm mode
-     * @param flag
+     * @param flag boolean flag
      */
     public void setRunAlgo(boolean flag) { runAlgo = flag; }
 
     /**
      * Set the game to Add player mode
-     * @param flag
+     * @param flag boolean flag
      */
     public void setAddPlayer(boolean flag) {
         addPlayer = flag;
@@ -184,13 +184,13 @@ public class Board extends JPanel implements MouseListener {
 
     /**
      * Set the game to step by step moe
-     * @param flag
+     * @param flag boolean flag
      */
     public void setStepByStep(boolean flag) { stepByStep = flag; }
 
     /**
      * Simple setter to the Game object
-     * @param game
+     * @param game game
      */
     public void setGame(Game game) {
         this.game = game;
@@ -198,7 +198,7 @@ public class Board extends JPanel implements MouseListener {
 
     /**
      * Sets the loading variable, updates when game is loaded or not
-     * @param isLoaded
+     * @param isLoaded boolean flag
      */
     public void setLoaded(boolean isLoaded) {
         loaded = isLoaded;
@@ -206,7 +206,7 @@ public class Board extends JPanel implements MouseListener {
 
     /**
      * Sets if the game is in auto mode
-     * @param flag
+     * @param flag boolean flag
      */
     public void setRunAutoGame(boolean flag) {
         runAutoGame = flag;
@@ -232,7 +232,7 @@ public class Board extends JPanel implements MouseListener {
 
     /**
      * Sets if first click
-     * @param isClicked
+     * @param isClicked boolean flag
      */
     public void setFirstClick(boolean isClicked) {
         firstClick = isClicked;

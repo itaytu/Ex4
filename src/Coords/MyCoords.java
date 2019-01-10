@@ -58,8 +58,10 @@ public class MyCoords implements coords_converter {
 		return newVector;
 	}
 
-	/** computes the polar representation of the 3D vector be gps0-->gps1 
+	/** computes the polar representation of the 3D vector be gps0-->gps1
 	 *  Note: this method should return an azimuth (aka yaw), elevation (pitch), and distance
+	 * @param gps0 point1 gps
+	 * @param gps1 point2 gps
 	 */
 	@Override
 	public double[] azimuth_elevation_dist(Point3D gps0, Point3D gps1) {
@@ -91,7 +93,7 @@ public class MyCoords implements coords_converter {
 
 	/**
 	 * return true iff this point is a valid lat, lon , lat coordinate: [-180,+180],[-90,+90],[-450, +inf]
-	 * @param p
+	 * @param p point gps
 	 * @return boolean true or false.
 	 */
 	@Override
@@ -101,7 +103,9 @@ public class MyCoords implements coords_converter {
 				(-450<=p.z() && p.z()<=9000));
 	}
 	
-	/** return the LonNorm calculated for a given point. */
+	/** return the LonNorm calculated for a given point.
+	 * @param point gps point
+	 */
 	private double getLon(Point3D point) {
 		return Math.cos(point.x()*(Math.PI/180));
 	}

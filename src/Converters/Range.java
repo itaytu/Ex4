@@ -10,8 +10,8 @@ public class Range {
 	/**
 	 * Constructs a range between 2 doubles
 	 * 
-	 * @param min
-	 * @param max
+	 * @param min minimum point
+	 * @param max maximum point
 	 */
 	// Min x and Max x, Or Min y and Max y
 	public Range(double min, double max) {
@@ -22,8 +22,8 @@ public class Range {
 	/**
 	 * Constructs a range between 2 integers
 	 * 
-	 * @param min
-	 * @param max
+	 * @param min minimum point
+	 * @param max maximum point
 	 */
 	public Range(int min, int max) {
 		this.min = min;

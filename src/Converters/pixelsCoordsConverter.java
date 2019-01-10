@@ -16,9 +16,12 @@ public class pixelsCoordsConverter {
 	/**
 	 * Constructs the ranges from the frame height and width, and X/Y coordinates
 	 * 
-	 * @param frame
-	 * @param xRange
-	 * @param yRange
+	 * @param width board width
+	 * @param height board height
+	 * @param leftBotX left bottom corner x
+	 * @param rightTopX right top corner x
+	 * @param leftBotY left bottom corner y
+	 * @param rightTopY right top corner y
 	 */
 	public pixelsCoordsConverter(int width, int height, double leftBotX, double rightTopX, double leftBotY,
 			double rightTopY) {

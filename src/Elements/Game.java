@@ -21,7 +21,7 @@ public class Game {
 
     /**
      * Constructor for a game from a play.
-     * @param play
+     * @param play play
      */
     public Game(Play play) {
         this.player = new Pacman(-1,-1);
@@ -42,7 +42,7 @@ public class Game {
     /**
      * Reading the information from the play and sorting it by the different objects.
      *
-     * @param play
+     * @param play play
      */
     private void init(Play play) {
         ghostArrayList = new ArrayList<>();
@@ -85,7 +85,7 @@ public class Game {
     }
     /**
      * Simple get method to get the Pacmans.
-     * @return
+     * @return arraylist of pacmans
      */
     public ArrayList<Pacman> getPacmanArrayList() {
         return pacmanArrayList;
@@ -93,7 +93,7 @@ public class Game {
 
     /**
      * Simple get method to get the Fruits.
-     * @return
+     * @return arraylist of fruits
      */
     public ArrayList<Fruit> getFruitArrayList() {
         return fruitArrayList;
@@ -101,7 +101,7 @@ public class Game {
 
     /**
      * Simple get method to get the Ghosts.
-     * @return
+     * @return arraylist of ghosts
      */
     public ArrayList<Ghost> getGhostArrayList() {
         return ghostArrayList;
@@ -109,7 +109,7 @@ public class Game {
 
     /**
      * Simple get method to get the Blocks.
-     * @return
+     * @return arraylist of blocks
      */
     public ArrayList<Block> getBlockArrayList() {
         return blockArrayList;
@@ -117,7 +117,7 @@ public class Game {
 
     /**
      * Add a player to the game.
-     * @param p
+     * @param p add player
      */
     public void addPlayer(Pacman p) {
         player = new Pacman(p);
@@ -125,7 +125,7 @@ public class Game {
 
     /**
      * Simple get method to get the Player.
-     * @return
+     * @return player
      */
     public Pacman getPlayer () {
         return player;
@@ -133,7 +133,7 @@ public class Game {
 
     /**
      * Simple set method for the Player.
-     * @param p
+     * @param p point for player
      */
     public void setPlayer(Point3D p) {
         this.player = new Pacman(p.get_x(), p.get_y());
@@ -141,7 +141,7 @@ public class Game {
 
     /**
      * Updating the game.
-     * @param play
+     * @param play play
      */
     public void update(Play play) {
         pacmanArrayList.clear();

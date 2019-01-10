@@ -59,9 +59,9 @@ public class Map {
 	/**
 	 * Convert pixels to coords
 	 * 
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x x pixel
+	 * @param y y pixel
+	 * @return Point in pixels
 	 */
 	public Point3D toCoords(int x, int y) {
 		return converter.toCoords(x, y);
@@ -88,11 +88,11 @@ public class Map {
 	/**
 	 * Calculates the angle between to pixels on the board
 	 * 
-	 * @param x1
-	 * @param y1
-	 * @param x2
-	 * @param y2
-	 * @return
+	 * @param x1 x pixel point1
+	 * @param y1 y pixel point1
+	 * @param x2 x pixel point2
+	 * @param y2 y pixel point2
+	 * @return angle between pixels
 	 */
 	public double angleBetweenPixels(int x1, int y1, int x2, int y2) {
 

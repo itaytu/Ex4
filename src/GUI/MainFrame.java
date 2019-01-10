@@ -17,7 +17,7 @@ public class MainFrame extends JFrame {
 
     /**
      * The main View for the game. It hosts the board panel, where all the paint work done.
-     * @param board
+     * @param board board
      */
     public MainFrame(Board board) {
         this.board = board;
@@ -141,7 +141,7 @@ public class MainFrame extends JFrame {
 
     /**
      * Updates the text label on the status bar.
-     * @param msg
+     * @param msg string message
      */
     public void updateTextLabel(String msg) {
         textLabel.setText("");

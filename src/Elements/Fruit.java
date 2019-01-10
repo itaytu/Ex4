@@ -15,10 +15,10 @@ public class Fruit {
 
 	/**
 	 * Constructor from a given CSV file.
-	 * @param data
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param data string
+	 * @param x index for x
+	 * @param y index for y
+	 * @param z index for z
 	 */
 	public Fruit(String[] data, int x, int y, int z) {
 		_type = 'F';
