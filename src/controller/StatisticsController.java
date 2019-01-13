@@ -183,7 +183,7 @@ public class StatisticsController {
         NumberFormat formatter = new DecimalFormat("#0.000");
         double difference;
 
-        textArea.append("Map ID\tNo. Of Games Human Played\tNo. Of Games Machine Played\tOur Human Average\tOur Machine Average\tAnother Students Average\tDifference\n\n");
+        textArea.append("Map ID\tNo. Of Human Games\tNo. Of Machine Games\tOur Human Average\tOur Machine Average\tAnother Students Average\tDifference\n\n");
 
         for (int i=0; i<9; i++) {
 

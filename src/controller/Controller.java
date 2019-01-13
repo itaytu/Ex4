@@ -90,6 +90,7 @@ public class Controller extends Observer {
             frame.getRunStepByStep().setEnabled(true);
             frame.getRunGame().setEnabled(true);
             frame.getRunAlgo().setEnabled(true);
+            frame.getRunAlgoWithout().setEnabled(false);
         });
 
         frame.getRemovePlayer().addActionListener(e -> {
@@ -137,6 +138,7 @@ public class Controller extends Observer {
             game = new Game(play);
 
             board.setLoaded(true);
+            frame.getRunAlgoWithout().setEnabled(true);
             board.setGame(game);
 
             board.updateGUI();
@@ -202,8 +204,6 @@ public class Controller extends Observer {
         nextStepPoint = new Point3D(game.getFruitArrayList().get(randomFruit).getPoint().get_x()-0.00001,game.getFruitArrayList().get(0).getPoint().get_y()-0.00001);
         Pacman newPlayer = new Pacman(nextStepPoint.get_x(), nextStepPoint.get_y());
         game.addPlayer(newPlayer);
-        System.out.println("In run Algo WIthout");
-        System.out.println("PLAYER POINT: " + game.getPlayer().getPoint().get_x() + ", " + game.getPlayer().getPoint().get_y());
 
         if(!serverInitiated) initServer(true);
         board.setRunAlgoWithout(true);
@@ -352,7 +352,6 @@ public class Controller extends Observer {
                 play.rotate(0);
                 game.update(play);
                 board.updateGUI();
-                System.out.println(play.isRuning());
                 frame.updateTextLabel(play.getStatistics() + " | Game has ended");
             }
 

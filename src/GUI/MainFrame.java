@@ -99,6 +99,7 @@ public class MainFrame extends JFrame {
 
         runAlgoWithout = new MenuItem("Without Player");
         algorithm.add(runAlgoWithout);
+        runAlgoWithout.setEnabled(false);
 
         loadGame = new MenuItem("Load Game");
         file.add(loadGame);

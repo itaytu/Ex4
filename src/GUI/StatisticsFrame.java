@@ -38,7 +38,7 @@ public class StatisticsFrame extends JFrame {
 
         pack();
 
-        setSize(1240, 230);
+        setSize(1000, 250);
     }
 
     /**

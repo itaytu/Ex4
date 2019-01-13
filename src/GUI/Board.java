@@ -156,19 +156,6 @@ public class Board extends JPanel implements MouseListener {
     }
 
     /**
-     * Clears all game objects from board
-     */
-    public void clearGame() {
-        game.setPlayer(new Point3D(0,0,0));
-        game.getBlockArrayList().clear();
-        game.getGhostArrayList().clear();
-        game.getFruitArrayList().clear();
-        game.getPacmanArrayList().clear();
-
-        repaint();
-    }
-
-    /**
      * Set the game to a run algorythm mode
      * @param flag boolean flag
      */
