@@ -15,8 +15,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+import observer.Observable;
+import observer.Observer;
 
 /**
  * This class represents the Controller of the project, this class is in charge of the communication
@@ -29,7 +29,7 @@ import java.util.Observer;
  * @author Itay Tuson and Sagi Oshri.
  */
 
-public class Controller implements Observer {
+public class Controller extends Observer {
 
     private MyCoords coords = new MyCoords();
 
@@ -194,6 +194,9 @@ public class Controller implements Observer {
         startThread();
     }
 
+    /**
+     * Run game in algoryhtm mode, without choosing a starting point for the Player.
+     */
     private void runAlgoWithout() {
         int randomFruit = (int)(Math.random()*game.getFruitArrayList().size());
         nextStepPoint = new Point3D(game.getFruitArrayList().get(randomFruit).getPoint().get_x()-0.00001,game.getFruitArrayList().get(0).getPoint().get_y()-0.00001);
@@ -217,12 +220,11 @@ public class Controller implements Observer {
     }
 
     /**
-     * This function is in charge of checking and making updates when needed, by observing the board.
+     * This function is in charge of checking and making updates when needed, by observing the NextPoint object, who is Observable.
      * @param o observable
-     * @param arg object observed
      */
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(Observable o) {
         NextPoint nextPoint = ((NextPoint) o).getNextPoint();
 
         nextStepPoint = nextPoint.getPoint();
@@ -251,7 +253,7 @@ public class Controller implements Observer {
         }
     }
 
-    private void observe(Observable o) {
+    public void observe(Observable o) {
         o.addObserver(this);
     }
 
