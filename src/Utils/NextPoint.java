@@ -3,7 +3,7 @@ package Utils;
 import Coords.MyCoords;
 import Geom.Point3D;
 
-import java.util.Observable;
+import observer.Observable;
 
 /**
  * This class defines the next point, which created when user clicked on the Board.
@@ -22,7 +22,6 @@ public class NextPoint extends Observable {
             this.nextPoint = nextPoint;
             azimuth = coords.azimuth_elevation_dist(currentPoint, nextPoint);
         }
-        setChanged();
         notifyObservers();
     }
 

@@ -202,7 +202,7 @@ public class StatisticsController {
                     formatter.format(humanScoreSumByMapId[i]) + "\t\t" +
                     formatter.format(machineScoreSumByMapId[i]) + "\t\t" +
                     formatter.format(studentsScoreSumByMapId[i]) + "\t\t" +
-                    formatter.format(difference) + "\n");
+                    formatter.format(difference) + "\t\n");
         }
     }
 }
