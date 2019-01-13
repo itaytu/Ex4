@@ -51,6 +51,12 @@ In the project we've implemented the use of the *Observer* design pattern, and t
                 considering the blocks in the way. Each path is calculated with the use of the [dijkstra Algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
                 for graphs and with the [BFS algorithm](https://en.wikipedia.org/wiki/Breadth-first_search). After all the paths were
                 calculated the Algorithm finds the shortest path and returns it as the path for the player movement.
+                
+ For more information about the Calculations class click [here](https://github.com/itaytu/Ex4/wiki).
+ 
+ ## Project Diagram
+ ![uml_projectpicture](https://user-images.githubusercontent.com/42068756/51084225-e0440780-172e-11e9-908c-646aef4b2981.jpeg)
+
  
  ### Other Projects
  For different version of this project you can go into:
