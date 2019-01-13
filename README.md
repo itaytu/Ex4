@@ -40,6 +40,8 @@ In the project we've implemented the use of the *Observer* design pattern, and t
  
  GUI - This package is in charge of the UI of the game.
  
+ observer - This package is in charge of the observers and the observed objects.
+ 
  Tests - This package is in charge of the tests needed for the calculations.
  
  Utils - This package is in charge of the classes needed in order to perform some of the methods.
