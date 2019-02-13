@@ -29,27 +29,13 @@ import java.util.Queue;
 public class Calculations {
 
     private pixelsCoordsConverter converter;
-
     private Game game;
 
     private GraphObject playerObject;
-    private GraphObject fruitObject;
     private GraphObject targetFruit;
 
-    private ArrayList<GraphObject> blocksArrayList;
-    private ArrayList<GraphObject> fruitArrayList;
-    private ArrayList<GraphObject> path;
     private ArrayList<GraphObject> finalPath;
-
-    private ArrayList<ArrayList<GraphObject>> allPaths;
-
-    private ArrayList<Double> pathsDistance;
-
-    private ArrayList<String> shortestPath;
-    private ArrayList<ArrayList<String>> allShortestPaths;
-
-    private LineOfSight lineOfSight;
-    private Graph graph;
+    private ArrayList<GraphObject> blocksArrayList;
 
     private static boolean fruitINIT;
     private static int target;
@@ -68,7 +54,6 @@ public class Calculations {
         GraphObject.resetID();
 
         this.game = game;
-        this.lineOfSight = new LineOfSight(game.getBlockArrayList(), width, height);
 
         blocksArrayList = new ArrayList<>();
         converter = new pixelsCoordsConverter( width, height, 35.20238, 35.21236, 32.10190, 32.10569);
@@ -83,34 +68,36 @@ public class Calculations {
     /**
      * This function initiates all the calculations needed to get the shortest path from player to fruit.
      */
-    public void INIT(){
+    public void INIT(int width, int height){
+        LineOfSight lineOfSight = new LineOfSight(game.getBlockArrayList(), width, height);
+
         //create a GraphObject for player.
         createPlayerObject();
 
         //create a GraphObject for each fruit.
-        fruitArrayList = new ArrayList<>();
+        ArrayList<GraphObject> fruitArrayList = new ArrayList<>();
         for(Fruit f : game.getFruitArrayList()) {
-            createFruitObject(f);
+            createFruitObject(f, fruitArrayList);
         }
 
         //create an ArrayList containing player, blocks and a given fruit, all as GraphObjects.
-        allPaths = new ArrayList<>();
+        ArrayList<ArrayList<GraphObject>> allPaths = new ArrayList<>();
         for (GraphObject graphObject : fruitArrayList) {
-            createPath(graphObject);
+            createPath(graphObject, allPaths);
         }
 
         //Add neighbors to each GraphObject, create a Graph, and calculate path.
-        pathsDistance = new ArrayList<>();
-        allShortestPaths = new ArrayList<>();
-        for (ArrayList<GraphObject> graphObjects : allPaths) {
-            addNeighbors(graphObjects);
-            Graph g = createGraph(graphObjects);
-            createPath(g);
-            clearNeighbors(graphObjects);
+        ArrayList<Double> pathsDistance = new ArrayList<>();
+        ArrayList<ArrayList<String>> allShortestPaths = new ArrayList<>();
+        for (ArrayList<GraphObject> path : allPaths) {
+            addNeighbors(path, lineOfSight);
+            Graph g = createGraph(path);
+            createPath(g, pathsDistance, path, allShortestPaths);
+            clearNeighbors(path);
         }
 
         //Find the minimum path in all the paths.
-        getMinPath();
+        getMinPath(pathsDistance, allPaths, allShortestPaths, fruitArrayList);
     }
 
 
@@ -168,7 +155,8 @@ public class Calculations {
      * This function creates a GraphObject for a given fruit.
      * @param f - GraphObject
      */
-    private  void createFruitObject(Fruit f) {
+    private void createFruitObject(Fruit f, ArrayList<GraphObject> fruitArrayList) {
+        GraphObject fruitObject;
         int [] fruitPoint = converter.gps2Pixels(f.getPoint());
         Point3D fruitPixels = new Point3D(fruitPoint[0], fruitPoint[1]);
         if(fruitINIT) GraphObject.decreaseID();
@@ -181,8 +169,8 @@ public class Calculations {
      * This function creates an ArrayList of GraphObjects containing the player, block edges and a given fruit.
      * @param fruitObject - Graph Object
      */
-    private void createPath(GraphObject fruitObject) {
-        path = new ArrayList<>();
+    private void createPath(GraphObject fruitObject, ArrayList<ArrayList<GraphObject>> allPaths)  {
+        ArrayList<GraphObject> path = new ArrayList<>();
         path.add(playerObject);
         path.addAll(blocksArrayList);
         path.add(fruitObject);
@@ -195,7 +183,7 @@ public class Calculations {
      * The calculation is made by using the BFS algorithm.
      * @param graphObjectArrayList -  graphObjectArrayList
      */
-    private void addNeighbors(ArrayList<GraphObject> graphObjectArrayList) {
+    private void addNeighbors(ArrayList<GraphObject> graphObjectArrayList, LineOfSight lineOfSight) {
         Queue<GraphObject> BFS = new LinkedList<>();
 
         int fruitIndex = graphObjectArrayList.size()-1;
@@ -231,7 +219,7 @@ public class Calculations {
      * @return Graph graph
      */
     private Graph createGraph(ArrayList<GraphObject> graphObjectArrayList) {
-        graph = new Graph();
+        Graph graph = new Graph();
         //int id = 0;
         for(int i = 0; i < graphObjectArrayList.size(); i++) {
             if(!graphObjectArrayList.get(i).getNeighbors().isEmpty()){
@@ -258,11 +246,11 @@ public class Calculations {
      * This method is used by using the dijkstra Graph Algorithm.
      * @param g graph
      */
-    private void createPath(Graph g) {
-        shortestPath = new ArrayList<>();
+    private void createPath(Graph g, ArrayList<Double> pathsDistance, ArrayList<GraphObject> path, ArrayList<ArrayList<String>> allShortestPaths) {
+        ArrayList<String> shortestPath;
         target = path.size()-1;
-        Graph_Algo.dijkstra(graph, "0");
-        Node b = graph.getNodeByName("" + (target));
+        Graph_Algo.dijkstra(g, "0");
+        Node b = g.getNodeByName("" + (target));
         pathsDistance.add(b.getDist());
         shortestPath = b.getPath();
         allShortestPaths.add(shortestPath);
@@ -271,7 +259,7 @@ public class Calculations {
     /**
      * This function calculates the minimum path for a player from all the paths.
      */
-    private void getMinPath() {
+    private void getMinPath(ArrayList<Double> pathsDistance, ArrayList<ArrayList<GraphObject>> allPaths, ArrayList<ArrayList<String>> allShortestPaths, ArrayList<GraphObject> fruitArrayList) {
         int minIndex = 0;
         if(pathsDistance.isEmpty()) return;
         double min = pathsDistance.get(0);
@@ -283,7 +271,7 @@ public class Calculations {
             }
         }
 
-        createFinalPath(allPaths.get(minIndex), allShortestPaths.get(minIndex), minIndex);
+        createFinalPath(allPaths.get(minIndex), allShortestPaths.get(minIndex), minIndex, fruitArrayList);
     }
 
     /**
@@ -292,7 +280,7 @@ public class Calculations {
      * @param shortestPath - ArrayList containing the path
      * @param index - index for the minimal fruit
      */
-    private void createFinalPath(ArrayList<GraphObject> graphObjects, ArrayList<String> shortestPath, int index) {
+    private void createFinalPath(ArrayList<GraphObject> graphObjects, ArrayList<String> shortestPath, int index, ArrayList<GraphObject> fruitArrayList) {
         finalPath = new ArrayList<>();
         for (String s : shortestPath) {
             for (GraphObject graphObject : graphObjects) {
@@ -316,33 +304,11 @@ public class Calculations {
         }
     }
 
+
+
     public ArrayList<GraphObject> getFinalPath() { return finalPath; }
 
     public GraphObject getTargetFruit() { return targetFruit; }
 
-
-    /**
-     * Simple getters methods needed for the JUnit class.
-     * @return ArrayList
-     */
-    public ArrayList<GraphObject> getPath() {
-        return path;
-    }
-
-    public ArrayList<ArrayList<GraphObject>> getAllPaths() {
-        return allPaths;
-    }
-
-    public ArrayList<Double> getPathsDistance() {
-        return pathsDistance;
-    }
-
-    public ArrayList<String> getShortestPath() {
-        return shortestPath;
-    }
-
-    public ArrayList<ArrayList<String>> getAllShortestPaths() {
-        return allShortestPaths;
-    }
 
 }

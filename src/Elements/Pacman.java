@@ -8,7 +8,6 @@ import Geom.Point3D;
 public class Pacman {
 	
 	private int _ID;
-	private char _type;
 	private Point3D _point;
 	private int _weight;
 	private double _speed;
@@ -25,7 +24,6 @@ public class Pacman {
 	 * @param z index for z
 	 */
 	public Pacman(String [] data, int x, int y, int z) {
-		_type = 'P';
 		_ID = Integer.parseInt(data[1]);
 
 		_x = Double.parseDouble(data[x]);
@@ -45,7 +43,6 @@ public class Pacman {
 	 */
 	public Pacman(double x, double y) {
 		_ID = _IDGUI++;
-		_type = 'M';
 		_x = x; _y = y; _z = 0;
 		_point = new Point3D(_x, _y, _z);
 		_weight = (int) (Math.random()*(5)+1);
@@ -59,7 +56,6 @@ public class Pacman {
 	 */
 	public Pacman(Pacman p) {
 		_ID = p._ID;
-		_type = p._type;
 		_x = p._x; _y = p._y; _z = p._z;
 		_point = new Point3D(p._point);
 		_weight = p._weight;

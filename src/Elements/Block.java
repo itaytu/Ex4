@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class Block {
 
 	private int ID;
-	private char type;
 	private Point3D MinLeft, MaxLeft, MinRight, MaxRight;
 	private double weight;
 	private double x1, y1, z1;
@@ -22,7 +21,6 @@ public class Block {
 	 * @param data string data
 	 */
 	public Block(String[] data) {
-		type = 'B';
 		ID = Integer.parseInt(data[1]);
 
 		this.x1 = Double.parseDouble(data[3]);

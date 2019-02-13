@@ -8,7 +8,6 @@ import Geom.Point3D;
 public class Fruit {
 
 	private int _ID;
-	private char _type;
 	private Point3D _point;
 	private double _weight;
 	private double _x, _y, _z;
@@ -21,7 +20,6 @@ public class Fruit {
 	 * @param z index for z
 	 */
 	public Fruit(String[] data, int x, int y, int z) {
-		_type = 'F';
 		_ID = Integer.parseInt(data[1]);
 
 		_x = Double.parseDouble(data[x]);
