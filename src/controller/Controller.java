@@ -328,7 +328,7 @@ public class Controller extends Observer {
 
                 while ((play.isRuning() && !game.getFruitArrayList().isEmpty())) {
                     calculations = new Calculations(game, board.getWidth(), board.getHeight());
-                    calculations.INIT();
+                    calculations.INIT(board.getWidth(), board.getHeight());
                     ArrayList<GraphObject> path = calculations.getFinalPath();
                     for (int i = 1; i < path.size(); i++) {
                         Point3D target = path.get(i).getPointGPS();

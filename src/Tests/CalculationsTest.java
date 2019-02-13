@@ -66,20 +66,16 @@ class CalculationsTest {
 
     @Test
     void INIT() {
-        calculations1.INIT();
-        calculations2.INIT();
+        calculations1.INIT(1283, 559);
+        calculations2.INIT(1283, 559);
 
         boolean flag1 = true;
         boolean flag2 = true;
 
-        if(calculations1.getShortestPath().isEmpty()) flag1 = false;
         if(calculations1.getFinalPath().isEmpty()) flag1 = false;
-        if(calculations1.getPathsDistance().isEmpty()) flag1 = false;
         if(calculations1.getTargetFruit()== null) flag1 = false;
 
-        if(calculations2.getShortestPath().isEmpty()) flag2 = false;
         if(calculations2.getFinalPath().isEmpty()) flag2 = false;
-        if(calculations2.getPathsDistance().isEmpty()) flag2 = false;
         if(calculations2.getTargetFruit()== null) flag2 = false;
 
         assertEquals(true, flag1, "Function is wrong");
