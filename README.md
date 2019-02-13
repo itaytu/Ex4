@@ -54,6 +54,8 @@ In the project we've implemented the use of the *Observer* design pattern, and t
                 
  For more information about the Calculations class click [here](https://github.com/itaytu/Ex4/wiki).
  
+ ## Game Preview
+<img width="954" alt="gameprev" src="https://user-images.githubusercontent.com/42068756/52698553-5df07280-2f7c-11e9-8587-f32b4582ab53.PNG">
  
  ### Other Projects
  For different version of this project you can go into:
