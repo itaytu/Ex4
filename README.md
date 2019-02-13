@@ -54,9 +54,6 @@ In the project we've implemented the use of the *Observer* design pattern, and t
                 
  For more information about the Calculations class click [here](https://github.com/itaytu/Ex4/wiki).
  
- ## Project Diagram
-![umldiagram_png](https://user-images.githubusercontent.com/42068756/51084285-bb03c900-172f-11e9-99a3-4ad85c5a93b9.png)
-
  
  ### Other Projects
  For different version of this project you can go into:
