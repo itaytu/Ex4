@@ -58,6 +58,6 @@ In the project we've implemented the use of the *Observer* design pattern, and t
 <img width="954" alt="gameprev" src="https://user-images.githubusercontent.com/42068756/52698553-5df07280-2f7c-11e9-8587-f32b4582ab53.PNG">
  
  ### Other Projects
- For different version of this project you can go into:
+ For previous versions of this project you can go into:
      [Pacman-Simulation](https://github.com/itaytu/Pacman-Game-Simulation). [GPS-Project](https://github.com/itaytu/GPS-Project).
  
