@@ -1,4 +1,4 @@
-# Ex4 - Final OOP project
+# Pacman Game - Final OOP project
 
 In this project we've created a simulation of a **Pacman Game**. 
 The game can be played on 9 different maps with different scenarios and different methods such as: Running a game via clicking a point
@@ -59,5 +59,5 @@ In the project we've implemented the use of the *Observer* design pattern, and t
  
  ### Other Projects
  For different version of this project you can go into:
-     [Ex3](https://github.com/itaytu/Ex3). [Ex2](https://github.com/itaytu/Ex2).
+     [Pacman-Simulation](https://github.com/itaytu/Pacman-Game-Simulation). [GPS-Project](https://github.com/itaytu/GPS-Project).
  
